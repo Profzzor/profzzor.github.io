@@ -8,14 +8,8 @@ export type EachRoute = {
 };
 
 export const ROUTES: EachRoute[] = [
-  {
-    title: "Home",
-    href: "/index",
-    noLink: true,
-    items: [
-      { title: "Welcome", href: "/welcome" },
-    ],
-  },
+  { title: "Welcome", href: "/welcome" },
+  { title: "python2", href: "/python2" },
 ];
 
 type Page = { title: string; href: string };
