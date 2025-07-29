@@ -72,8 +72,8 @@ My WAN interface will obtain its IP address dynamically from my NAT network (192
 |-------------------------------|------------------|
 | NAT (Assigned by Host OS)     | 192.168.5.0/24   |
 | LAN (Firewall)                | 192.168.10.0/24  |
-<br>
-{{< image src="images/blog/pfsense-setup/image.png" caption="Figure 1.0 (My NAT)" alt="alter-text" height="" width="" position="center" command="fill" option="q100" class="img-fluid" title="image title" webp="false" >}}
+
+<br>{{< image src="images/blog/pfsense-setup/image.png" caption="Figure 1.0 (My NAT)" alt="alter-text" height="" width="" position="center" command="fill" option="q100" class="img-fluid" title="image title" webp="false" >}}
 
 {{< image src="images/blog/pfsense-setup/image1.png" caption="Figure 1.1 (LAN)" alt="alter-text" height="" width="" position="center" command="fill" option="q100" class="img-fluid" title="image title" webp="false" >}}
 
