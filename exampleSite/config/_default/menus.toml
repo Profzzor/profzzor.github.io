@@ -11,10 +11,10 @@ name = "About"
 url = "about/"
 weight = 2
 
-[[main]]
-name = "Contact"
-url = "contact/"
-weight = 3
+#[[main]]
+#name = "Contact"
+#url = "contact/"
+#weight = 3
 
 [[main]]
 name = "Pages"
@@ -24,14 +24,14 @@ hasChildren = true
 
   [[main]]
   parent = "Pages"
-  name = "Tags"
-  url = "tags/"
+  name = "Categories"
+  url = "categories/"
   weight = 1
 
   [[main]]
   parent = "Pages"
-  name = "Categories"
-  url = "categories/"
+  name = "Tags"
+  url = "tags/"
   weight = 2
 
 # footer menu
@@ -45,12 +45,12 @@ name = "About"
 url = "about/"
 weight = 2
 
-[[footer]]
-name = "Contact"
-url = "contact/"
-weight = 3
+#[[footer]]
+#name = "Contact"
+#url = "contact/"
+#weight = 3
 
-[[footer]]
-name = "Privacy Policy"
-url = "privacy-policy/"
-weight = 4
+#[[footer]]
+#name = "Privacy Policy"
+#url = "privacy-policy/"
+#weight = 4

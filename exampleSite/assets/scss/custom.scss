@@ -1,0 +1,88 @@
+.badge-primary {
+  background-color: #000000 !important;
+  color: #fff !important;
+}
+
+.dropdown-menu {
+  background-color: #808080 !important;
+  
+}
+
+.dropdown-item {
+    color: #fff !important;
+}
+
+.dropdown-item:hover {
+  color: black !important; /* optional hover text color */
+}
+
+img.img-fluid {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+pre {
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #808080;  /* Light border for the code block */
+  overflow-x: auto;  /* Enable horizontal scrolling for long code lines */
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;  /* Some space below the code block */
+}
+
+code {
+  font-family: "Courier New", Courier, monospace;
+}
+
+.responsive-columns {
+  column-count: 1;
+
+  @media (min-width: 576px) {
+    column-count: 2;
+  }
+
+  @media (min-width: 768px) {
+    column-count: 3;
+  }
+
+  @media (min-width: 992px) {
+    column-count: 4;
+  }
+
+  @media (min-width: 1200px) {
+    column-count: 6;
+  }
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 8px 12px;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  table {
+    font-size: 14px;
+  }
+
+  th,
+  td {
+    padding: 6px 8px;
+  }
+}
+
+asside {
+  display: block;
+  background-color: #333;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 1rem 0;
+}

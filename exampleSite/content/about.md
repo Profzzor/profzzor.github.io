@@ -1,43 +1,72 @@
 ---
-title: "About The Author"
-description: "this is meta-description"
-image: "images/author.png"
+title: "About Me"
+description: "Little Bit about whoami"
+# image: "images/author.png"
 layout: "about"
 draft: false
+
+# project
+project:
+  enable: true
+  title: "Project's"
+  project_list:
+  - name: "Regalyzer"
+    content: "Developing a script-based toolkit for forensic analysis of Windows Registry hives. This project automates the extraction and analysis of key artifacts from registry hives."
+  - name: "Arsenal Tmux"
+    content: "A customized clone of arsenal-cli."
+
+# certificate
+certificate:
+  enable: true
+  title: "Certificate's"
+  certificate_list:
+  - name: "Cyber Threat Intelligence 101"
+    content: "Dec 2023"
+  - name: "Blue Team Junior Analyst"
+    content: "Nov 2023"
 
 # education
 education:
   enable: true
   title: "Formal Education"
   education_list:
-  - name: "Southeast University"
-    content: "1985 • 1991 • gravida nibh velvelit auctor alimo quet menean solli"
-  - name: "Northeast University"
-    content: "1985 • 1991 • gravida nibh velvelit auctor alimo quet menean solli"
-  - name: "Easteast University"
-    content: "1985 • 1991 • gravida nibh velvelit auctor alimo quet menean solli"
-  - name: "Southeast University"
-    content: "1985 • 1991 • gravida nibh velvelit auctor alimo quet menean solli"
+  - name: "B.Tech - Information Technology"
+    content: "2017 • 2021 • Noorul Islam Centre for Higher Education"
 
 # experience
 experience:
   enable: true
-  title: "Work Experience"
+  title: "Experience"
   experience_list:
-  - "Best Writer Award"
-  - "Best New Newel"
-  - "Best Book"
-  - "Best Article"
-  - "Best New Newel"
-  - "Best New Newel"
-  - "Best Book"
-  - "Best Article"
-  - "Best New Newel"
-  - "Best Book"
+  - "DFIR"
+  - "Malware Analysis"
+  - "Pentest"
+  - "CTF"
+
+# Tools
+tool:
+  enable: true
+  title: "Tool's"
+  tool_list:
+  - "Volatility"
+  - "FTK Imager"
+  - "BinaryNinja"
+  - "Sysinternals"
+  - "Wireshark"
+  - "Splunk"
+  - "ELK"
+  - "Chainsaw"
+  - "Yara"
+  - "Sigma"
+  - "BurpSuite"
+  - "Netexec"
+  - "Impacket"
+  - "Powerview"
 
 ---
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi amet, ultrices scelerisue cras. Tincidunt hendrerit egestas venenatis risus sit nunc. Est esglit non in ipsum lect;aaus adipiscing et enim porttitor. Dui ultrices et volud eetpat nunc, turpis rutrum elit vestibululm ipsum. Arcu fringilla duis vitae mos dsdllis duicras interdum purus cursus massa metus. Acc umsan felaais, egsdvet nisi, viverra turpis fermentum sit suspf bafedfb ndisse fermentum consectetur. Facilisis feugiat trisique orci tempor sed masd fbsssa tristique ultrices sodales. Augue est sapien elementum facilisis. Enim tincidnt cras interdum purus  ndisse.  morbi quis nunc.
-
-
-Et dolor placerat tempus risus nunc urna, nunc a. Mattis viverra ut sapidaaen enim sed tortor. Mattis gravida fusce cras interdum purus cursus massa metus. Acc umsan felaais, eget nisi, viverra turpis fermentum sit suspf bafedfb ndisse.  morbi quis nunc, at arcu quam facilisi. In in lacus aliquam dictum sagittis morbi odio. Et magnis cursus sem sed condimentum. Nibh non potenti ac amsdfet Tincidunt hendrerit egestas venenatis risus sit nunc. Est esglit non in ipsuasdm lect;aaus adipiscing et enim porttitor. Dui ultrices et volud eetpat nunc, turpis  ndisse.  morbi quis nunc, at arcu quam facilisi  ndisse.  morbi quis nunc, at arcu quam facilisi
+I started my journey on Hack The Box (HTB), where I am actively learning and tackling Capture 
+The Flag (CTF) challenges to hone my skills. As I continue to grow, I am particularly fascinated by defensive security, with a 
+strong interest in areas like malware analysis, threat intelligence, and digital forensics. I am driven by the “behind-the-scenes” 
+elements of security, and following the trail of an attacker has become a key motivation in my development within the cyber 
+defensive domain.

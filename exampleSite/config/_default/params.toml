@@ -7,19 +7,19 @@ logo = "images/logo.png"
 # Note: logo_width is not work with .svg file
 logo_width = "150x"
 # logo text will only show when logo is missing.
-logo_text = "Geeky"
+logo_text = "Profzzor"
 # navbar fixed to top
 navbar_fixed = false
 # OpenGraph / Twitter Card metadata
 description = "This is meta description"
-author = "Themefisher"
+author = "Profzzor"
 image = "images/logo.png" # this image will be used as fallback if a page has no image of its own
 # contact info
 address = "9567 Turner Trace Apt. BC C3G8A4"
 mobile = "+211234565523"
 email = "info@email.com"
 # contact form action
-contact_form_action = "#" # contact form works with https://formspree.io
+#contact_form_action = "#" # contact form works with https://formspree.io
 # search
 search = true
 
@@ -40,14 +40,14 @@ no_tags_found = "No Tags Found"
 
 mainSections = ["blog"]
 # about widget content
-about_widget_content = "Lorem ipsum dolor sit amet, conse tfctetur adipiscing elit. Vel in in donec iaculis tempasus odio nunc laoreet . Libero ullam rgscorper."
+about_widget_content = "Defensive & Offensive Security Professional | CTF Competitor | Specializing in Malware Analysis, Digital Forensics"
 # footer content
 footer_content = "Lorem ipsum dolor sit amt, conse adip iscing. donec iaculis tempasus laoreet. Libero ullam rgscper."
 # custom script on header, example: custom_script= "<script>console.log(\"Hello World\")</script>" 
 custom_script= ""
 # copyright
-theme_copyright = true
-copyright = "Copyright by your company"
+theme_copyright = false
+copyright = "Copyright by Profzzor"
 
 # 404
 error_404_text = "404 Page Not Found!"
@@ -60,9 +60,9 @@ preloader = "" # use jpg, png, svg or gif format.
 
 # Banner
 [banner]
-enable = true
+enable = false
 title_large = "Welcome **!**"
-title_small = "to Jhon Bravo Blog"
+title_small = "to Profzzor Blog"
 image = "images/banner.png"
 background_image = "/images/banner-bg-shape.svg"
 content = "Are Developer and recently started your own business Already made website to ensure presence wants to develop."
@@ -70,9 +70,9 @@ button_label = "Know About Me"
 button_link = "about/"
 
 # Advertise
-[advertisement]
-image = "images/promotion.png"
-link = "https://gethugothemes.com/"
+#[advertisement]
+#image = "images/promotion.png"
+#link = "https://gethugothemes.com/"
 
 # cookies
 [cookies]
@@ -83,7 +83,7 @@ button = "I Accept"
 
 ######################## sidebar widgets #########################
 [widgets]
-sidebar = ["about", "categories", "recent-post", "newsletter"]
+sidebar = ["about", "categories", "recent-post"]
 # available widget : about,categories,newsletter,recent-post
 
 
@@ -103,26 +103,21 @@ mailchimp_form_name = "b_463ee871f45d2d93748e77cad_a0a2c6d074" # replace this co
 
 ############################# social site ########################
 [[social]]
-title = "facebook"
-icon = "fab fa-facebook" # themify icon : https://themify.me/themify-icons
-link = "#"
-
-[[social]]
-title = "twitter"
-icon = "fab fa-twitter" # themify icon : https://themify.me/themify-icons
-link = "#"
-
-[[social]]
-title = "instagram"
-icon = "fab fa-instagram" # fontawesome icon pack : https://fontawesome.com/icons/
-link = "#"
-
-[[social]]
 title = "github"
 icon = "fab fa-github" # fontawesome icon pack : https://fontawesome.com/icons/
-link = "#"
+link = "https://github.com/Profzzor"
+
+[[social]]
+title = "x"
+icon = "fab fa-twitter" # themify icon : https://themify.me/themify-icons
+link = "https://x.com/Profzzr"
 
 [[social]]
 title = "linkedin"
 icon = "fab fa-linkedin" # fontawesome icon pack : https://fontawesome.com/icons/
-link = "#"
+link = "https://linkedin.com/in/abish-g"
+
+[[social]]
+title = "youtube"
+icon = "fab fa-youtube" # themify icon : https://themify.me/themify-icons
+link = "https://youtube.com/@Profzzor"
