@@ -1,0 +1,46 @@
+# Name of the workflow
+name: Deploy Hexo to GitHub Pages
+
+on:
+  # Trigger the workflow on pushes to the 'main' branch
+  push:
+    branches:
+      - main
+
+  # Allows you to run this workflow manually
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    # Give the workflow permissions to write to the repository
+    permissions:
+      contents: write
+      
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checks out your 'main' branch
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Sets up Node.js for Hexo
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Installs Hexo and your theme dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Builds the site using Hexo
+      - name: Generate static files
+        run: npm run build # This runs 'hexo generate'
+
+      # 5. Pushes the built files (from the 'public' folder) to the 'gh-pages' branch
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
