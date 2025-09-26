@@ -588,7 +588,7 @@ In short, it is an automated tool used to gain an initial foothold inside a netw
 
 # **Appendix A: CTF Challenge Findings**
 
-This section documents the specific questions posed by the Hackthebox Holmes CTF 2025 challenge and the corresponding answers derived from the preceding analysis. Each answer is supported by evidence found within the malware's code and behavior.
+This section documents the specific questions posted by the Hackthebox Holmes CTF 2025 challenge and the corresponding answers derived from the preceding analysis. Each answer is supported by evidence found within the malware's code and behavior.
 
 | **#** | **Question** | **Answer** | **Reference / Justification** |
 | --- | --- | --- | --- |
