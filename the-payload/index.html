@@ -7,7 +7,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://profzzor.github.io/the-payload/cover.png">
 <meta property="article:published_time" content="2025-09-26T00:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-26T14:15:28.379Z">
+<meta property="article:modified_time" content="2025-09-26T14:38:38.953Z">
 <meta property="article:author" content="Profzzor">
 <meta property="article:tag" content="CTF">
 <meta property="article:tag" content="HTB">
@@ -20,7 +20,7 @@
   "url": "http://profzzor.github.io/the-payload/",
   "image": "http://profzzor.github.io/the-payload/cover.png",
   "datePublished": "2025-09-26T00:00:00.000Z",
-  "dateModified": "2025-09-26T14:15:28.379Z",
+  "dateModified": "2025-09-26T14:38:38.953Z",
   "author": [
     {
       "@type": "Person",
@@ -523,7 +523,7 @@
 <p>This component contains all the real malicious logic. Once active, it first checks a remote “kill switch” domain (<a target="_blank" rel="noopener" href="http://k1v7-echosim.net/">k1v7-echosim.net</a>) to see if it should proceed.</p>
 <p>If the kill switch is off, the malware scans the 192.168.1.0&#x2F;24 network, finds open file shares, and copies itself to other machines. Its ultimate goal is to run its final payload: a PowerShell script that opens a backdoor, giving attackers a remote command-line shell on the infected computer.</p>
 <p>In short, it is an automated tool used to gain an initial foothold inside a network, which then allows for hands-on, interactive attacks.</p>
-<h1 id="Appendix-A-CTF-Challenge-Findings"><a href="#Appendix-A-CTF-Challenge-Findings" class="headerlink" title="Appendix A: CTF Challenge Findings"></a><strong>Appendix A: CTF Challenge Findings</strong></h1><p>This section documents the specific questions posed by the Hackthebox Holmes CTF 2025 challenge and the corresponding answers derived from the preceding analysis. Each answer is supported by evidence found within the malware’s code and behavior.</p>
+<h1 id="Appendix-A-CTF-Challenge-Findings"><a href="#Appendix-A-CTF-Challenge-Findings" class="headerlink" title="Appendix A: CTF Challenge Findings"></a><strong>Appendix A: CTF Challenge Findings</strong></h1><p>This section documents the specific questions posted by the Hackthebox Holmes CTF 2025 challenge and the corresponding answers derived from the preceding analysis. Each answer is supported by evidence found within the malware’s code and behavior.</p>
 <table>
 <thead>
 <tr>
