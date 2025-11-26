@@ -19,6 +19,7 @@ nav:
 
 menu:
   Home: / || fas fa-home
+  About: /about/ || fas fa-user
   Categories: /categories/ || fas fa-folder-open 
   Archives: /archives/ || fas fa-archive
   # List||fas fa-list:
