@@ -221,3 +221,10 @@
   transform: scale(1.05);               /* Slight Zoom */
   box-shadow: 0 0 15px rgba(0, 112, 186, 0.6); /* Glow */
 }
+
+/* Force code block background to white and text color to your blue */
+.highlight code,
+code {
+  background-color: #365676 !important;
+  color: #ffffff !important;
+}
