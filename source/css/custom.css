@@ -1,0 +1,223 @@
+/* Inside source/css/custom.css */
+
+/* =========================================
+   1. ANIMATION DEFINITION (Shared)
+   ========================================= */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); } 
+  100% { transform: scale(1); }
+}
+
+/* =========================================
+   2. SIDEBAR BUTTON (Your Specific Config)
+   ========================================= */
+#aside-content .card-info #card-info-btn {
+  /* PayPal Brand Gradient */
+  background: linear-gradient(45deg, #003087, #0070ba); 
+  
+  /* Make text and icon white for contrast */
+  color: white !important; 
+  
+  /* Add a Glow Effect */
+  box-shadow: 0 0 15px rgba(0, 112, 186, 0.6); 
+  
+  /* Apply the heartbeat animation */
+  animation: heartbeat 2s infinite ease-in-out;
+  
+  /* Round the corners */
+  border-radius: 50px; 
+  border: none;
+  
+  /* Center text if it isn't already */
+  display: block; 
+  text-align: center;
+  margin-top: 10px; /* Spacing from stats */
+}
+
+/* Specific fix for the PayPal icon inside the button */
+#aside-content .card-info #card-info-btn .fa-paypal {
+  color: white !important; 
+  margin-right: 5px;       
+  animation: none;         
+}
+
+/* Hover State */
+#aside-content .card-info #card-info-btn:hover {
+  animation: none; 
+  background: #0070ba;
+  transform: scale(1.05); 
+  box-shadow: 0 0 20px rgba(0, 112, 186, 0.9);
+}
+
+/* =========================================
+   3. BOTTOM POST BUTTON (Custom Style)
+   ========================================= */
+/* This mimics the Sidebar style visually, but fixes the layout 
+   so it looks like the "Perfect Pill" at the bottom */
+
+.custom-reward-btn {
+  /* Layout: Big Pill Shape */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 30px; /* The size you liked */
+  margin: 0 5px;
+  
+  /* Visuals: Matching the Sidebar */
+  background: linear-gradient(45deg, #003087, #0070ba);
+  color: white !important;
+  border-radius: 50px;
+  font-weight: bold;
+  text-decoration: none !important;
+  box-shadow: 0 0 15px rgba(0, 112, 186, 0.6);
+  
+  /* Animation */
+  animation: heartbeat 2s infinite ease-in-out;
+  transition: all 0.3s ease;
+}
+
+.custom-reward-btn i {
+  margin-right: 8px;
+  color: white !important;
+  font-size: 1.1em;
+}
+
+.custom-reward-btn:hover {
+  animation: none;
+  background: #0070ba;
+  box-shadow: 0 5px 25px rgba(0, 112, 186, 0.9);
+  transform: translateY(-2px); /* Slight lift instead of scale to prevent blur */
+}
+
+/* =========================================
+   4. LAYOUT FIXES
+   ========================================= */
+/* Remove extra space in the post footer */
+.post-reward {
+  margin-top: 20px;
+  padding-top: 0 !important;
+}
+
+/* =========================================
+   SCROLLBAR CUSTOMIZATION
+   ========================================= */
+
+/* 1. Webkit Browsers (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 14px;  /* Width of vertical scrollbar (Standard is ~12-16px) */
+  height: 14px; /* Height of horizontal scrollbar */
+}
+
+/* The Track (Background) */
+::-webkit-scrollbar-track {
+  background: #1e1e1e; /* Dark background to match dark mode */
+  border-radius: 0px;
+}
+
+/* The Thumb (The moving part) */
+::-webkit-scrollbar-thumb {
+  background-color: #0070ba; /* Your PayPal Blue */
+  border-radius: 10px;       /* Roundness */
+  border: 3px solid #1e1e1e; /* Creates a nice padding effect inside the track */
+}
+
+/* The Thumb on Hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #003087; /* Darker Blue when you grab it */
+}
+
+/* 2. Firefox Support */
+* {
+  scrollbar-width: auto; /* 'auto' = standard width, 'thin' = lean width */
+  scrollbar-color: #0070ba #1e1e1e; /* Thumb Color | Track Color */
+}
+
+/* =========================================
+   SIDEBAR CATEGORIES HOVER
+   ========================================= */
+
+/* Target the Category Link on Hover */
+#aside-content .card-categories .card-category-list-item a:hover {
+  background-color: #0070ba !important; /* Your PayPal Blue */
+  color: white !important;              /* Text turns white */
+  padding-left: 15px;                   /* Optional: Sliding effect */
+  transition: all 0.3s ease;
+}
+
+/* Target the Count Number (The "2" in your screenshot) on Hover */
+#aside-content .card-categories .card-category-list-item a:hover .card-category-list-count {
+  color: white !important;              /* Ensure the number turns white too */
+}
+
+/* =========================================
+   SIDEBAR ARCHIVES HOVER (Matching Categories)
+   ========================================= */
+
+/* Target the Archive Link on Hover */
+#aside-content .card-archives .card-archive-list-item a:hover {
+  background-color: #0070ba !important; /* Your PayPal Blue */
+  color: white !important;              /* Text turns white */
+  padding-left: 15px;                   /* Optional: Sliding effect */
+  transition: all 0.3s ease;
+}
+
+/* Target the Count Number (The "1" in your screenshot) on Hover */
+#aside-content .card-archives .card-archive-list-item a:hover .card-archive-list-count {
+  color: white !important;              /* Ensure the number turns white too */
+}
+
+/* =========================================
+   POST TAGS STYLING (Solid Blue Pills)
+   ========================================= */
+
+/* 1. Default State: Solid PayPal Blue */
+#post .tag_share .post-meta__tags {
+  background-color: #0070ba !important; /* Force Blue Background */
+  color: white !important;              /* Force White Text */
+  border: 1px solid #0070ba !important; /* Blue Border */
+  
+  /* Smooth transition */
+  transition: all 0.3s ease;
+  margin-right: 8px; 
+}
+
+/* 2. Hover State: Darker Blue (Matching your scrollbar hover) */
+#post .tag_share .post-meta__tags:hover {
+  background-color: #003087 !important; /* Darker Blue */
+  border-color: #003087 !important;
+  
+  /* Add a little interaction effect */
+  transform: translateY(-2px); 
+  box-shadow: 0 4px 10px rgba(0, 48, 135, 0.5);
+}
+
+/* =========================================
+   TAGS PAGE (Uniform Color)
+   ========================================= */
+
+/* 1. Force all tags to be Blue */
+#page .tag-cloud-list a {
+  background-color: #0070ba !important; /* Your Theme Blue */
+  color: white !important;              /* White Text */
+  
+  /* Reset shape to look like pills */
+  border-radius: 20px;
+  padding: 8px 18px;
+  margin: 6px;                          /* Space between tags */
+  border: none !important;
+  
+  /* Ensure readability */
+  font-size: 1.1em !important;          /* Optional: Make them all same size */
+  text-decoration: none !important;
+  opacity: 1 !important;                /* Remove any transparency */
+  
+  transition: all 0.3s ease;
+}
+
+/* 2. Hover Effect (Darker Blue + Glow) */
+#page .tag-cloud-list a:hover {
+  background-color: #003087 !important; /* Darker Blue */
+  transform: scale(1.05);               /* Slight Zoom */
+  box-shadow: 0 0 15px rgba(0, 112, 186, 0.6); /* Glow */
+}

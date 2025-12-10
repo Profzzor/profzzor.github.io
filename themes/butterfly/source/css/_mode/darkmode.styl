@@ -140,9 +140,9 @@ if hexo-config('darkmode.enable') || hexo-config('display_mode') == 'dark'
 
     img:not(.cover)
       if hexo-config('lazyload.enable') && hexo-config('lazyload.blur') && !hexo-config('lazyload.placeholder')
-        filter: blur(0) brightness(.8)
+        filter: blur(0) brightness(1)
       else
-        filter: brightness(.8)
+        filter: brightness(1)
 
     #aside-content .aside-list > .aside-list-item:not(:last-child)
       border-bottom: 1px dashed alpha(#FFFFFF, .1)

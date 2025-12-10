@@ -1,12 +1,19 @@
-.post-reward
-  .reward-button
-    i.fas.fa-qrcode
-    = theme.reward.text || _p('donate')
-  .reward-main
-    ul.reward-all
+//- .post-reward
+//-   .reward-button
+//-     i.fas.fa-qrcode
+//-     = theme.reward.text || _p('donate')
+//-   .reward-main
+//-     ul.reward-all
+//-       each item in theme.reward.QR_code
+//-         - const clickTo = item.link || item.img
+//-         li.reward-item
+//-           a(href=url_for(clickTo) target='_blank')
+//-             img.post-qr-code-img(src=url_for(item.img) alt=item.text)
+//-           .post-qr-code-desc=item.text
+.post-reward(style="margin-top: 20px;")
+  if theme.reward.QR_code
+    div(style="display: flex; justify-content: center;")
       each item in theme.reward.QR_code
-        - const clickTo = item.link || item.img
-        li.reward-item
-          a(href=url_for(clickTo) target='_blank')
-            img.post-qr-code-img(src=url_for(item.img) alt=item.text)
-          .post-qr-code-desc=item.text
+        a.custom-reward-btn(href=url_for(item.link) target="_blank")
+          i.fab.fa-paypal
+          span= item.text
