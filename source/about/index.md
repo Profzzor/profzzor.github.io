@@ -20,11 +20,10 @@ in my development within the cyber defense domain.
 
 ---
 
-## 🧩 CTF Content Development
-### **Malops – Rootkit Reverse Engineering Challenge**
-Developed a kernel-level reverse engineering challenge based on the *Singularity rootkit*, focusing on:
-- Kernel-level stealth/persistence techniques  
-- Malware reversing concepts  
+## Experience
+
+1. **Content Developer**, Malops.io  
+2. **Security Researcher**, KapitalResearch
 
 ---
 
@@ -33,29 +32,22 @@ Developed a kernel-level reverse engineering challenge based on the *Singularity
 ### **Alquymia CTF 2025 – Brazil**
 **Team:** Kapital Research  
 - 🥉 *3rd Place*  
-- Completed 28/29 challenges  
-- My contributions: **Misc category**
+- Completed 28/29 challenges
 
 ### **Huntress CTF 2025**
 **Team:** Kapital Research  
 - Ranked **60th** globally  
-- Completed all 65 challenges  
-- My contributions: **Malware Analysis** and **Reverse Engineering**
+- Completed all 65 challenges
 
 ### **HackTheBox – Holmes CTF 2025**
 **Team:** Kapital Research  
 - 🏅 *4th Place*  
-- Completed all 65 challenges in 5 hours  
-- My contributions:  
-  - **Malware Analysis**  
-  - **DFIR (Linux Memory Analysis)**  
-Both categories labeled *hard*.
+- Completed all 65 challenges in 5 hours
 
 ### **HackTheBox – Cyber Apocalypse 2025**
 **Team:** LawSuit  
 - Ranked **101st**  
-- Solved 71/77 challenges  
-- My contributions: **Forensics, OSINT, Blockchain**
+- Solved 71/77 challenges
 
 ---
 
