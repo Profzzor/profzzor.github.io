@@ -1,5 +1,5 @@
 ---
-title: Aurat
+title: AuRAT
 description: Aurat is a stealthy C++ backdoor featuring API hashing, AES-128 encrypted C2, and process injection targeting svchost.exe.
 date: 2026-01-05
 categories:
