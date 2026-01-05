@@ -102,6 +102,9 @@ typedef struct _IMAGE_FILE_HEADER {
 } IMAGE_FILE_HEADER;
 ```
 
+> For a deeper understanding of the Windows PE file structure, I recommend checking out this [article](https://plant-hornet-797.notion.site/Dive-into-PE-files-structure-2605df796637807ab54bc4f6980cf499).
+> **Creds:** [@m7mad](https://www.linkedin.com/in/mohammed-nour-al-murie-1792a32b6/)
+
 **Architecture Identification**
 
 The `Machine` field within the IMAGE_FILE_HEADER identifies the target architecture of the executable. Common values include:
