@@ -1,0 +1,558 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Aurat | Profzzor</title><meta name="author" content="Profzzor"><meta name="copyright" content="Profzzor"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="Aurat is a stealthy C++ backdoor featuring API hashing, AES-128 encrypted C2, and process injection targeting svchost.exe.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Aurat">
+<meta property="og:url" content="http://profzzor.github.io/AuRAT/index.html">
+<meta property="og:site_name" content="Profzzor">
+<meta property="og:description" content="Aurat is a stealthy C++ backdoor featuring API hashing, AES-128 encrypted C2, and process injection targeting svchost.exe.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://profzzor.github.io/AuRAT/cover.PNG">
+<meta property="article:published_time" content="2026-01-05T00:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-05T13:45:22.411Z">
+<meta property="article:author" content="Profzzor">
+<meta property="article:tag" content="AuRAT">
+<meta property="article:tag" content="Backdoor">
+<meta property="article:tag" content="Malops">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://profzzor.github.io/AuRAT/cover.PNG"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Aurat",
+  "url": "http://profzzor.github.io/AuRAT/",
+  "image": "http://profzzor.github.io/AuRAT/cover.PNG",
+  "datePublished": "2026-01-05T00:00:00.000Z",
+  "dateModified": "2026-01-05T13:45:22.411Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Profzzor",
+      "url": "http://profzzor.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://profzzor.github.io/AuRAT/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.json","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"No results found for: ${query}","hits_stats":"${hits} articles found"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":500,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: 'Copy Successful',
+    error: 'Copy Failed',
+    noSupport: 'Browser Not Supported'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: 'Just now',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"You have switched to Traditional Chinese","cht_to_chs":"You have switched to Simplified Chinese","day_to_night":"You have switched to Dark Mode","night_to_day":"You have switched to Light Mode","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-center"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: 'Load More'
+  },
+  isPhotoFigcaption: true,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Aurat',
+  isHighlightShrink: undefined,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/profile.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Profzzor</span></a><a class="nav-page-title" href="/"><span class="site-name">Aurat</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  Back to Home</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Aurat</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">Created</span><time datetime="2026-01-05T00:00:00.000Z" title="Created 2026-01-05 00:00:00">2026-01-05</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Malware-Analysis/">Malware Analysis</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading Time:</span><span>25mins</span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="1-Executive-Summary"><a href="#1-Executive-Summary" class="headerlink" title="1. Executive Summary"></a>1. Executive Summary</h1><p>This report details the comprehensive technical analysis of the <strong>Aurat</strong> malware sample, a reverse engineering challenge provided by <strong>MalOps.io</strong> (<a target="_blank" rel="noopener" href="https://www.google.com/url?sa=E&q=https://malops.io/challenges/aurat">https://malops.io/challenges/aurat</a>). The sample is a sophisticated, custom-built <strong>Backdoor</strong> developed in C++ designed to simulate a realistic targeted attack.</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li><strong>Defense Evasion:</strong> The binary employs advanced evasion techniques, including <strong>header tampering</strong> (removal of DOS&#x2F;PE signatures) to defeat static scanners and <strong>Dynamic API Resolution</strong> (using a DJB2 hashing algorithm) to conceal its import table and functionality.</li>
+<li><strong>Network Resilience:</strong> The malware operates a robust Command and Control (C2) infrastructure with a <strong>failover mechanism</strong>. It iterates through three hardcoded C2 servers, attempting to tunnel traffic first via <strong>DNS (Port 53)</strong> and falling back to <strong>HTTPS (Port 443)</strong>.</li>
+<li><strong>Encrypted Communication:</strong> Network traffic is protected using <strong>AES-128 encryption</strong> via the Windows CryptoAPI, rendering network-based signature detection ineffective without the encryption keys.</li>
+<li><strong>Malicious Capabilities:</strong> The malware possesses a versatile command set allowing it to:<ul>
+<li><strong>Inject Malicious Code:</strong> It performs process hollowing against <strong>svchost.exe</strong> to execute payloads stealthily.</li>
+<li><strong>Download &amp; Execute:</strong> It functions as a dropper, capable of saving files to disk (\Temp\auk.exe) or loading modules directly into memory.</li>
+<li><strong>Reconnaissance:</strong> It actively harvests system metadata, including usernames, OS versions, and active user sessions.</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-Technical-Analysis"><a href="#2-Technical-Analysis" class="headerlink" title="2. Technical Analysis"></a>2. Technical Analysis</h1><h2 id="2-1-Sample-Overview"><a href="#2-1-Sample-Overview" class="headerlink" title="2.1. Sample Overview"></a>2.1. Sample Overview</h2><p>The sample is a binary file with a size of <code>117756 bytes</code> and the following <code>SHA-256 identifier: 9d4600b440a7c730737f83de7188cc68e83124a10934c3d280610b8709084859</code></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dir</span> challenge</span><br><span class="line"><span class="number">15</span><span class="literal">-10-2025</span>  <span class="number">14</span>:<span class="number">52</span>           <span class="number">117</span>,<span class="number">756</span> challenge</span><br><span class="line"></span><br><span class="line">certutil <span class="literal">-hashfile</span> challenge sha256</span><br><span class="line">SHA256 hash of challenge:</span><br><span class="line"><span class="number">9</span>d4600b440a7c730737f83de7188cc68e83124a10934c3d280610b8709084859</span><br><span class="line">CertUtil: <span class="literal">-hashfile</span> command completed successfully.</span><br></pre></td></tr></table></figure>
+<p>Initial inspection of the sample reveals the absence of the standard <code>MZ</code> DOS header and <code>PE</code> signature required for a valid Windows Portable Executable. This indicates deliberate header tampering, a commonly used technique to evade static analysis. </p>
+<p><img src="/AuRAT/image-1.png" alt="Figure 1: Hex view of the malware sample showing missing &#96;MZ&#96; and &#96;PE&#96; headers."></p>
+<h2 id="2-2-Header-Reconstruction"><a href="#2-2-Header-Reconstruction" class="headerlink" title="2.2. Header Reconstruction"></a>2.2. Header Reconstruction</h2><h3 id="2-2-1-DOS-Header-Reconstruction"><a href="#2-2-1-DOS-Header-Reconstruction" class="headerlink" title="2.2.1 DOS Header Reconstruction"></a>2.2.1 DOS Header Reconstruction</h3><p>The first <strong>64 bytes</strong> of a Windows Portable Executable correspond to the <strong>DOS header</strong> (<code>IMAGE_DOS_HEADER</code>). This header begins with the <strong>magic value <code>MZ</code> (<code>0x4D5A</code>)</strong>, which identifies the file as a DOS&#x2F;Windows executable and enables the Windows loader to parse subsequent PE structures. </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_DOS_HEADER</span> &#123;</span>     <span class="comment">// DOS .EXE header</span></span><br><span class="line">    WORD e_magic;                      <span class="comment">// 00h: Magic number &quot;MZ&quot;</span></span><br><span class="line">    WORD e_cblp;                       <span class="comment">// 02h: Bytes on last page of file</span></span><br><span class="line">    WORD e_cp;                         <span class="comment">// 04h: Pages in file</span></span><br><span class="line">    WORD e_crlc;                       <span class="comment">// 06h: Relocations</span></span><br><span class="line">    WORD e_cparhdr;                    <span class="comment">// 08h: Size of header in paragraphs</span></span><br><span class="line">    WORD e_minalloc;                   <span class="comment">// 0Ah: Minimum extra paragraphs needed</span></span><br><span class="line">    WORD e_maxalloc;                   <span class="comment">// 0Ch: Maximum extra paragraphs needed</span></span><br><span class="line">    WORD e_ss;                         <span class="comment">// 0Eh: Initial (relative) SS value</span></span><br><span class="line">    WORD e_sp;                         <span class="comment">// 10h: Initial SP value</span></span><br><span class="line">    WORD e_csum;                       <span class="comment">// 12h: Checksum</span></span><br><span class="line">    WORD e_ip;                         <span class="comment">// 14h: Initial IP value</span></span><br><span class="line">    WORD e_cs;                         <span class="comment">// 16h: Initial (relative) CS value</span></span><br><span class="line">    WORD e_lfarlc;                     <span class="comment">// 18h: File address of relocation table</span></span><br><span class="line">    WORD e_ovno;                       <span class="comment">// 1Ah: Overlay number</span></span><br><span class="line">    WORD e_res[<span class="number">4</span>];                     <span class="comment">// 1Ch: Reserved words</span></span><br><span class="line">    WORD e_oemid;                      <span class="comment">// 24h: OEM identifier (for e_oeminfo)</span></span><br><span class="line">    WORD e_oeminfo;                    <span class="comment">// 26h: OEM information; e_oemid specific</span></span><br><span class="line">    WORD e_res2[<span class="number">10</span>];                   <span class="comment">// 28h: Reserved words</span></span><br><span class="line">    LONG e_lfanew;                     <span class="comment">// 3Ch: Offset to NT header</span></span><br><span class="line">&#125; IMAGE_DOS_HEADER;</span><br></pre></td></tr></table></figure>
+<p>In the sample, the DOS header data is present but the <code>MZ</code> magic bytes are missing due to intentional header tampering.</p>
+<p>To restore the DOS header, <strong>two bytes were inserted at the beginning of the file</strong> using a hex editor (<code>Edit → Insert Bytes</code>) and modified to the correct magic value: <code>4D 5A</code><br><img src="/AuRAT/image-2.png" alt="Figure 2: Hex view showing the insertion of the &#96;MZ&#96; DOS header magic bytes."></p>
+<p>After inserting the <code>MZ</code> signature, the DOS header is structurally valid.</p>
+<h4 id="e-lfanew-Field-Analysis"><a href="#e-lfanew-Field-Analysis" class="headerlink" title="e_lfanew Field Analysis"></a>e_lfanew Field Analysis</h4><p>One of the most critical fields within the DOS header is <strong><code>e_lfanew</code></strong>, a 4-byte value located at offset <strong><code>0x3C</code></strong>. This field specifies the file offset to the <strong>NT Headers</strong> (<code>IMAGE_NT_HEADERS</code>), which contain the PE signature, File Header, and Optional Header.</p>
+<p>In this sample, the <code>e_lfanew</code> value points to offset <strong><code>0x180</code></strong>, indicating the location of the NT Headers within the file. This confirms that the remainder of the PE structure exists and that only the initial header values were modified.</p>
+<p><img src="/AuRAT/image-3.png" alt="Figure 3: Hex view showing &#96;e_lfanew&#96; pointing to offset &#96;0x180&#96; and the missing &#96;PE&#96; signature."></p>
+<h3 id="2-2-2-NT-Headers-and-PE-Signature"><a href="#2-2-2-NT-Headers-and-PE-Signature" class="headerlink" title="2.2.2 NT Headers and PE Signature"></a>2.2.2 NT Headers and PE Signature</h3><p>At the offset specified by <code>e_lfanew</code>, a valid PE file must contain the <strong>PE signature</strong>, which consists of the 4-byte magic value:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">50 45 00 00  (&quot;PE\0\0&quot;)</span><br></pre></td></tr></table></figure>
+<p>Analysis of the sample shows that while the NT Headers region is present, the <strong>PE signature is missing</strong>, further confirming intentional header manipulation.</p>
+<p>Immediately following the PE signature is the <strong>IMAGE_FILE_HEADER</strong>, which has a fixed size of <strong>20 bytes</strong> and is defined as:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">IMAGE_FILE_HEADER</span> &#123;</span></span><br><span class="line">    WORD  Machine;              <span class="comment">// 00h: The target machine type (e.g., 0x014c = Intel 386)</span></span><br><span class="line">    WORD  NumberOfSections;     <span class="comment">// 02h: Number of sections in the PE file</span></span><br><span class="line">    DWORD TimeDateStamp;        <span class="comment">// 04h: Timestamp of file creation (seconds since Epoch)</span></span><br><span class="line">    DWORD PointerToSymbolTable; <span class="comment">// 08h: File offset of COFF symbol table (usually 0)</span></span><br><span class="line">    DWORD NumberOfSymbols;      <span class="comment">// 0Ch: Number of symbols in COFF symbol table (usually 0)</span></span><br><span class="line">    WORD  SizeOfOptionalHeader; <span class="comment">// 10h: Size of the Optional Header (usually 224 for PE32)</span></span><br><span class="line">    WORD  Characteristics;      <span class="comment">// 12h: Flags describing attributes (e.g., executable, DLL)</span></span><br><span class="line">&#125; IMAGE_FILE_HEADER;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Architecture Identification</strong></p>
+<p>The <code>Machine</code> field within the IMAGE_FILE_HEADER identifies the target architecture of the executable. Common values include:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0x014c</span> = Intel <span class="number">386</span> (x86)</span><br><span class="line"><span class="number">0x8664</span> = x64</span><br><span class="line"><span class="number">0x01C0</span> = ARM</span><br><span class="line"><span class="number">0x01C4</span> = ARMv7 Thumb</span><br><span class="line"><span class="number">0x0200</span> = Intel Itanium (IA64)</span><br></pre></td></tr></table></figure>
+<p>In this sample, the <code>Machine</code> value is <strong><code>0x8664</code></strong>, indicating that the malware is compiled as a <strong>64-bit (x64) Windows executable</strong>.</p>
+<p>By inserting the <code>PE</code> magic bytes (<code>0x50 0x45</code>), the executable structure is restored with both a valid DOS header and PE signature.</p>
+<p><img src="/AuRAT/image-4.png" alt="Figure 4: Hexadecimal view showing the restored &#96;MZ&#96; DOS header and &#96;PE\0\0&#96; signature at the offset specified by &#96;e_lfanew&#96;."></p>
+<h2 id="2-3-File-Identification"><a href="#2-3-File-Identification" class="headerlink" title="2.3. File Identification"></a>2.3. File Identification</h2><p>After reconstructing the PE headers, the sample is correctly parsed as a <strong>64-bit Windows Portable Executable (AMD64)</strong>. The binary is marked as a <strong>DLL</strong>, however, no exported functions are present, suggesting it is not intended to be loaded through standard DLL export mechanisms.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>File Name</td>
+<td>challenge</td>
+</tr>
+<tr>
+<td>File Type</td>
+<td>PE64 DLL (Windows GUI)</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>AMD64 (x86-64)</td>
+</tr>
+<tr>
+<td>File Size</td>
+<td>115.00 KiB (0x1CC00 bytes)</td>
+</tr>
+<tr>
+<td>MD5</td>
+<td>d8b5d297fd6218966461df97fabf630a</td>
+</tr>
+<tr>
+<td>SHA-1</td>
+<td>7a2751f54c81b48064d7f7ccc92e49e6433ad872</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>59742e7579553262987fa0789f8df05e9575c645a32eeb9986f47e87be4312cf</td>
+</tr>
+<tr>
+<td>Compilation Timestamp</td>
+<td>2021-06-03 17:42:27</td>
+</tr>
+<tr>
+<td>Entry Point</td>
+<td>0x180004688</td>
+</tr>
+<tr>
+<td>Compiler &#x2F; Language</td>
+<td>Microsoft Visual C&#x2F;C++</td>
+</tr>
+<tr>
+<td>Toolchain</td>
+<td>Visual Studio 2017 &#x2F; 2019</td>
+</tr>
+<tr>
+<td>Linker Version</td>
+<td>14.25</td>
+</tr>
+<tr>
+<td>Operating System</td>
+<td>Windows (AMD64, 64-bit)</td>
+</tr>
+</tbody></table>
+<p><img src="/AuRAT/image-5.png" alt="Figure 5: Triage Summary from Binary Ninja"></p>
+<p>The import table lists only <strong>KERNEL32.dll</strong>, indicating that the malware likely resolves additional APIs dynamically at runtime rather than through static imports, a common technique used to reduce static visibility and hinder analysis.</p>
+<p><img src="/AuRAT/image-6.png" alt="Figure 6: Static analysis results from Detect It Easy showing compiler, linker, and PE metadata"></p>
+<h2 id="2-4-Static-Analysis"><a href="#2-4-Static-Analysis" class="headerlink" title="2.4. Static Analysis"></a>2.4. Static Analysis</h2><h3 id="2-4-1-Entry-Point-Analysis"><a href="#2-4-1-Entry-Point-Analysis" class="headerlink" title="2.4.1. Entry Point Analysis"></a>2.4.1. Entry Point Analysis</h3><p>The analysis begins at the entry point address <strong>0x180004688</strong> (<code>_start</code>). Examination of the decompiled code reveals that this section consists of standard initialization routines generated by the <strong>Microsoft Visual C&#x2F;C++ compiler</strong>, rather than custom malicious logic.</p>
+<p>The entry point performs the following operations:</p>
+<ol>
+<li><p><strong>Stack Cookie Initialization</strong>:<br> The function calls<code> _security_init_cookie</code> (at 0x1800046d0). This is a standard Microsoft CRT (C Runtime) routine used to initialize the Global Security Cookie (GS Cookie) for stack buffer overflow protection.</p>
+<p> As seen in the decompiled code, it gathers entropy using:</p>
+<ul>
+<li>GetSystemTimeAsFileTime</li>
+<li>GetCurrentThreadId</li>
+<li>GetCurrentProcessId</li>
+<li>QueryPerformanceCounter</li>
+</ul>
+<p> This confirms the code is compiler boilerplate intended to harden the binary against exploitation.
+ </p>
+</li>
+<li><p><strong>CRT Dispatcher</strong>:<br> The code subsequently calls dllmain_dispatch (0x180004554), which acts as the wrapper for the standard <code>_DllMainCRTStartup</code>. This function is responsible for initializing the C&#x2F;C++ runtime environment (constructors, static variables) before passing execution to the developer-written main function.</p>
+<p> Inside dllmain_dispatch, the code handles standard DLL states (DLL_PROCESS_ATTACH, DLL_THREAD_ATTACH, etc.) and eventually directs execution to <strong>sub_180003fc0</strong>:</p>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Extract from dllmain_dispatch</span></span><br><span class="line"><span class="keyword">if</span> (arg2 - <span class="number">1</span> u&gt; <span class="number">1</span> || rax_2 != <span class="number">0</span>)</span><br><span class="line">    sub_180003fc0(arg1, arg2) <span class="comment">// &lt;--- Actual DllMain</span></span><br><span class="line">    rbx_1 = <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-2-Analysis-of-User-Code-DllMain"><a href="#2-4-2-Analysis-of-User-Code-DllMain" class="headerlink" title="2.4.2. Analysis of User Code (DllMain)"></a>2.4.2. Analysis of User Code (DllMain)</h3><p>The function <strong>sub_180003fc0</strong> serves as the actual entry point for the user-defined code (the real DllMain).</p>
+<p>Upon execution, it checks if arg2 (the fdwReason) equals 1 (DLL_PROCESS_ATTACH). If the DLL is being loaded into a process, it performs two distinct function calls using a helper function <strong>sub_180001000</strong>. This helper function takes a hexadecimal integer as an argument, which suggests it is an <strong>API hashing routine</strong> used to resolve function pointers dynamically.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Decompiled Logic of sub_180003fc0</span></span><br><span class="line"><span class="keyword">if</span> (arg2 == <span class="number">1</span>) <span class="comment">// DLL_PROCESS_ATTACH</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Resolve Function A via hash 0x1acb4b50 and call it with string</span></span><br><span class="line">    sub_180001000(<span class="number">0x1acb4b50</span>)(<span class="string">&quot;DLL_PROCESS_ATTACH&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Resolve Function B via hash 0x26662fcc and call it to spawn a thread</span></span><br><span class="line">    sub_180001000(<span class="number">0x26662fcc</span>)(<span class="number">0</span>, <span class="number">0</span>, sub_180003f60, &amp;data_18001c9f0, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>To understand what these functions do, we must analyze the hashing algorithm implemented in <code>sub_180001000</code>.</p>
+<h3 id="2-4-3-Dynamic-API-Resolution-API-Hashing"><a href="#2-4-3-Dynamic-API-Resolution-API-Hashing" class="headerlink" title="2.4.3. Dynamic API Resolution (API Hashing)"></a>2.4.3. Dynamic API Resolution (API Hashing)</h3><p>The malware employs a technique known as <strong>Dynamic API Resolution</strong> to conceal its imported functions from static analysis tools. This is handled by <strong>sub_180001000</strong> and <strong>sub_180004030</strong>.</p>
+<h4 id="Module-Base-Resolution"><a href="#Module-Base-Resolution" class="headerlink" title="Module Base Resolution"></a>Module Base Resolution</h4><p>The function <strong>sub_180004030</strong> is responsible for locating the base address of a specific system DLL without using GetModuleHandle. It accesses the <strong>Process Environment Block (PEB)</strong> via the GS register <code>(on x64 systems, GS:[0x60] points to the PEB)</code>.</p>
+<p>It traverses the PEB_LDR_DATA structure:</p>
+<ol>
+<li>Accesses InLoadOrderModuleList.</li>
+<li>Traverses the doubly linked list 3 times (Flink-&gt;Flink-&gt;Flink).</li>
+</ol>
+<p>Thus, the function returns the base address of <strong>kernel32.dll</strong>.</p>
+<h4 id="Hashing-Algorithm"><a href="#Hashing-Algorithm" class="headerlink" title="Hashing Algorithm"></a>Hashing Algorithm</h4><p>Once the base address of kernel32.dll is obtained, <strong>sub_180001000</strong> parses its Export Table. It iterates through the export names and calculates a hash for each name using a specific algorithm found in the inner loop:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rax_1 = rax_1 * <span class="number">0x21</span> + sx.d(i)</span><br></pre></td></tr></table></figure>
+<p>This is a variant of the <strong>DJB2</strong> hashing algorithm, using the multiplier <strong>0x21 (33 decimal)</strong>. The logic is:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hash = hash × <span class="number">33</span> + <span class="type">char</span></span><br></pre></td></tr></table></figure>
+<h4 id="Hash-Decryption"><a href="#Hash-Decryption" class="headerlink" title="Hash Decryption"></a>Hash Decryption</h4><p>Automated resolution of API hashes is typically performed using community-driven plugins such as <strong>HashDB</strong> (available for IDA Pro, Ghidra, and Binary Ninja Commercial). These tools query a central database to identify hashing algorithms and resolve values dynamically.</p>
+<p>However, this analysis is being conducted using <strong>Binary Ninja Free</strong>, which does not support the internal Python API or third-party plugins. To overcome this limitation and resolve the 121 API calls identified in the binary, an external static analysis approach was adopted.</p>
+<p>A standalone Python script was developed to generate a <strong>“Rainbow Table”</strong> (a pre-computed reference list). The script mimics the malware’s specific DJB2 hashing logic (hash * 33 + char) and iterates through the Export Address Tables (EAT) of common Windows system DLLs. This produces a searchable text file mapping the malware’s hashes to their corresponding human-readable API names.</p>
+<p>Python Resolution Script (resolver.py):</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pefile</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> glob</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">malware_hash</span>(<span class="params">api_name</span>):</span><br><span class="line">    <span class="comment"># The DJB2 variant found in the malware: hash = hash * 33 + char</span></span><br><span class="line">    hash_val = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> char <span class="keyword">in</span> api_name:</span><br><span class="line">        val = <span class="built_in">ord</span>(char)</span><br><span class="line">        hash_val = (hash_val * <span class="number">0x21</span> + val) &amp; <span class="number">0xFFFFFFFF</span></span><br><span class="line">    <span class="keyword">return</span> hash_val</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">build_rainbow_table</span>():</span><br><span class="line">    <span class="comment"># List of DLLs the malware likely imports from</span></span><br><span class="line">    dll_paths = [</span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\kernel32.dll&quot;</span>, <span class="comment"># sub_180001000</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\user32.dll&quot;</span>, <span class="comment"># sub_180001160</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\msvcrt.dll&quot;</span>, <span class="comment"># sub_1800012d0</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\advapi32.dll&quot;</span>, <span class="comment"># sub_180001430</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\wtsapi32.dll&quot;</span>, <span class="comment"># sub_180001590</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\shell32.dll&quot;</span>, <span class="comment"># sub_1800016f0</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\ws2_32.dll&quot;</span>, <span class="comment"># sub_180001850</span></span><br><span class="line">        <span class="string">r&quot;C:\Windows\System32\userenv.dll&quot;</span> <span class="comment"># sub_1800019b0 </span></span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;<span class="string">&#x27;HASH&#x27;</span>:&lt;<span class="number">12</span>&#125;</span> | <span class="subst">&#123;<span class="string">&#x27;API NAME&#x27;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;-&quot;</span> * <span class="number">40</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> path <span class="keyword">in</span> dll_paths:</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path): <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            pe = pefile.PE(path)</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">hasattr</span>(pe, <span class="string">&#x27;DIRECTORY_ENTRY_EXPORT&#x27;</span>):</span><br><span class="line">                <span class="keyword">for</span> exp <span class="keyword">in</span> pe.DIRECTORY_ENTRY_EXPORT.symbols:</span><br><span class="line">                    <span class="keyword">if</span> exp.name:</span><br><span class="line">                        func_name = exp.name.decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">                        h = malware_hash(func_name)</span><br><span class="line">                        <span class="built_in">print</span>(<span class="string">f&quot;0x<span class="subst">&#123;h:08x&#125;</span>   | <span class="subst">&#123;func_name&#125;</span>&quot;</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    build_rainbow_table()</span><br></pre></td></tr></table></figure>
+<p>The script requires the pefile library to parse the DLL headers. The output is redirected to a text file for easy searching during manual analysis.</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python <span class="literal">-m</span> pip install pefile</span><br><span class="line"></span><br><span class="line">python resolver.py &gt; api_list.txt</span><br></pre></td></tr></table></figure>
+<h4 id="Reconstructed-DllMain-Logic"><a href="#Reconstructed-DllMain-Logic" class="headerlink" title="Reconstructed DllMain Logic"></a>Reconstructed DllMain Logic</h4><p>With the hashes resolved, the behavior of <strong>sub_180003fc0</strong> becomes clear:</p>
+<ol>
+<li><strong>Anti-Analysis &#x2F; Logging</strong>:<br> It calls <code>OutputDebugStringA(&quot;DLL_PROCESS_ATTACH&quot;)</code>. Signal that execution has begun.</li>
+<li><strong>Payload Execution</strong>:<br> It calls <code>CreateThread</code> to execute the main malicious code located at <strong>sub_180003f60</strong>.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CreateThread(<span class="literal">NULL</span>, <span class="number">0</span>, (LPTHREAD_START_ROUTINE)sub_180003f60, &amp;data_18001c9f0, <span class="number">0</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-DllMain"><a href="#3-DllMain" class="headerlink" title="3. DllMain"></a>3. DllMain</h1><h2 id="3-1-Thread-Entry-Point-sub-180003f60"><a href="#3-1-Thread-Entry-Point-sub-180003f60" class="headerlink" title="3.1. Thread Entry Point (sub_180003f60)"></a>3.1. Thread Entry Point (sub_180003f60)</h2><p>The new thread spawned by DllMain executes the function <strong>sub_180003f60</strong>. This function acts as the initialization routine for the malware’s core logic.</p>
+<p>Using our generated API reference list (Rainbow Table), we resolved the first API call in this function:</p>
+<ul>
+<li><strong>Hash 0xb9f2133d</strong> -&gt; <strong>GetProcessHeap</strong> (Kernel32.dll)</li>
+</ul>
+<h3 id="3-1-1-Object-Allocation"><a href="#3-1-1-Object-Allocation" class="headerlink" title="3.1.1. Object Allocation"></a>3.1.1. Object Allocation</h3><p>After resolving GetProcessHeap, the function calls a memory allocation routine. Although the decompiler labels it <code>_get_terminate</code>, the arguments match the signature of <strong>HeapAlloc</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 0xb9f2133d -&gt; GetProcessHeap</span></span><br><span class="line">_get_terminate()(ResolveKernal32_API(<span class="number">0xb9f2133d</span>)(), <span class="number">8</span>, <span class="number">0x98</span>)</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>Handle</strong>: Result of GetProcessHeap().</li>
+<li><strong>Flags</strong>: 8 (Corresponds to <strong>HEAP_ZERO_MEMORY</strong>).</li>
+<li><strong>Size</strong>: 0x98 (Decimal <strong>152 bytes</strong>).</li>
+</ol>
+<p>This confirms the malware is allocating a <strong>152-byte structure</strong> on the heap. This structure likely holds the malware’s runtime configuration or “Context.”</p>
+<h3 id="3-1-2-Initialization-and-Execution"><a href="#3-1-2-Initialization-and-Execution" class="headerlink" title="3.1.2. Initialization and Execution"></a>3.1.2. Initialization and Execution</h3><p>Once the memory is allocated, the pointer to this structure (rax_3) is passed through two key functions:</p>
+<p><strong>Constructor (sub_180002110)</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rax_3 = sub_180002110(rax_3)</span><br></pre></td></tr></table></figure>
+<p>This function takes the empty 152-byte buffer and populates it. In C++ malware, this is typically the <strong>Class Constructor</strong>, responsible for setting default values.</p>
+<p><strong>Main Routine (sub_180002460)</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sub_180002460(rax_3, arg1, arg3, arg2)</span><br></pre></td></tr></table></figure>
+<p>The initialized structure and the global data pointer (arg1 &#x2F; data_18001c9f0) are passed to this function. This is likely the “Run” method of the malware.</p>
+<h2 id="3-2-Modular-API-Resolution"><a href="#3-2-Modular-API-Resolution" class="headerlink" title="3.2. Modular API Resolution"></a>3.2. Modular API Resolution</h2><p>The malware uses dedicated loader functions for specific system libraries. This structure confirms the malware’s modular design.</p>
+<table>
+<thead>
+<tr>
+<th>Resolver Function</th>
+<th>Targeted DLL</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>sub_180001000</strong></td>
+<td><strong>Kernel32.dll</strong></td>
+<td>Core system APIs (process, memory, threads, loader)</td>
+</tr>
+<tr>
+<td><strong>sub_180001160</strong></td>
+<td><strong>User32.dll</strong></td>
+<td>Windowing, input handling, UI interaction</td>
+</tr>
+<tr>
+<td><strong>sub_1800012d0</strong></td>
+<td><strong>Msvcrt.dll</strong></td>
+<td>C Runtime (strings, memory, formatted I&#x2F;O)</td>
+</tr>
+<tr>
+<td><strong>sub_180001430</strong></td>
+<td><strong>Advapi32.dll</strong></td>
+<td>Registry, services, security, user management</td>
+</tr>
+<tr>
+<td><strong>sub_180001590</strong></td>
+<td><strong>Wtsapi32.dll</strong></td>
+<td>Terminal Services &#x2F; session enumeration</td>
+</tr>
+<tr>
+<td><strong>sub_1800016f0</strong></td>
+<td><strong>Shell32.dll</strong></td>
+<td>Shell operations, filesystem helpers</td>
+</tr>
+<tr>
+<td><strong>sub_180001850</strong></td>
+<td><strong>Ws2_32.dll</strong></td>
+<td>Networking (sockets, DNS, TCP&#x2F;IP)</td>
+</tr>
+<tr>
+<td><strong>sub_1800019b0</strong></td>
+<td><strong>Userenv.dll</strong></td>
+<td>User profiles, environment variables</td>
+</tr>
+</tbody></table>
+<h2 id="3-3-Payload-Initialization-Constructor-Analysis"><a href="#3-3-Payload-Initialization-Constructor-Analysis" class="headerlink" title="3.3. Payload Initialization (Constructor Analysis)"></a>3.3. Payload Initialization (Constructor Analysis)</h2><p>The function <strong>sub_180002110</strong> takes the previously allocated 152-byte structure (passed as arg1) and populates it with runtime configuration and victim data. This process relies heavily on the modular API resolvers identified in Section 3.2.</p>
+<h3 id="3-3-1-Network-Initialization"><a href="#3-3-1-Network-Initialization" class="headerlink" title="3.3.1. Network Initialization"></a>3.3.1. Network Initialization</h3><p>The very first action is to initialize the Windows Sockets library.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0x2b7ae73e -&gt; WSAStartup</span></span><br><span class="line">ResolveWS2_32_API(<span class="number">0x2b7ae73e</span>)(<span class="number">0x202</span>, &amp;var_2d8);</span><br></pre></td></tr></table></figure>
+<p>The malware requests Winsock version <strong>2.2</strong> (0x202), confirming that it intends to communicate over the network.</p>
+<h3 id="3-3-2-Target-Path-Generation"><a href="#3-3-2-Target-Path-Generation" class="headerlink" title="3.3.2. Target Path Generation"></a>3.3.2. Target Path Generation</h3><p>The malware constructs a specific file path, likely for a secondary payload or self-replication.</p>
+<ol>
+<li><strong>Get System Directory</strong>:<br> It allocates a buffer (0x104 bytes) and calls <strong>GetWindowsDirectoryA</strong>.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0xefeef041 -&gt; GetWindowsDirectoryA</span></span><br><span class="line">ResolveKernal32_API(<span class="number">0xefeef041</span>)(rax_16, <span class="number">0x104</span>);</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>Append Filename</strong>:<br> It appends the string \Temp\auk.exe to the directory path using <strong>lstrcatA</strong>.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0x570c615e -&gt; lstrcatA</span></span><br><span class="line">__builtin_strcpy(&amp;var_138, <span class="string">&quot;\\Temp\\auk.exe&quot;</span>);</span><br><span class="line">ResolveKernal32_API(<span class="number">0x570c615e</span>)(rbx_5, &amp;var_138);</span><br></pre></td></tr></table></figure>
+<p><strong>Result:</strong> The malware targets the path <code>C:\Windows\Temp\auk.exe</code>.</p>
+<h3 id="3-3-3-System-Reconnaissance-Victim-Profiling"><a href="#3-3-3-System-Reconnaissance-Victim-Profiling" class="headerlink" title="3.3.3. System Reconnaissance (Victim Profiling)"></a>3.3.3. System Reconnaissance (Victim Profiling)</h3><p>The function proceeds to gather unique identifiers from the infected machine. These are stored in a larger internal structure allocated during execution (size 0x278).</p>
+<ol>
+<li><strong>OS Version</strong>:<br> It calls <strong>GetNativeSystemInfo</strong> (Hash 0x5cbebb8) and checks specific version numbers (likely checking for Windows 10&#x2F;Server 2016&#x2F;2019 versions corresponding to major version 9 or 6). It sets a configuration flag at offset 0x92 based on this check.</li>
+<li><strong>Username</strong>:<br> It uses the Advapi32 resolver to steal the current user’s name.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0x4320e6c1 -&gt; GetUserNameA</span></span><br><span class="line">ResolveAdvapi32_API(<span class="number">0x4320e6c1</span>)(arg1[<span class="number">0xa</span>] + <span class="number">0x114</span>, &amp;var_318);</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>Computer Name</strong>:<br> It uses the Kernel32 resolver to get the machine name.</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0xec9840b1 -&gt; GetComputerNameA</span></span><br><span class="line">ResolveKernal32_API(<span class="number">0xec9840b1</span>)(rbx_8 + <span class="number">0x10</span>, &amp;var_318);</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-4-Local-IP-Discovery"><a href="#3-3-4-Local-IP-Discovery" class="headerlink" title="3.3.4. Local IP Discovery"></a>3.3.4. Local IP Discovery</h3><p>The malware attempts to identify the local IP address of the victim machine using standard Winsock APIs:</p>
+<ol>
+<li><strong>gethostname</strong> (0x78cc8e3f): Retrieves the local computer name.</li>
+<li><strong>gethostbyname</strong> (0xc3de085a): Resolves the host name to a host entry structure.</li>
+<li><strong>inet_ntoa</strong> (0x57116105): Converts the retrieved raw IP address into a human-readable string (e.g., “192.168.1.50”).</li>
+</ol>
+<h3 id="3-3-5-Bot-Versioning"><a href="#3-3-5-Bot-Versioning" class="headerlink" title="3.3.5. Bot Versioning"></a>3.3.5. Bot Versioning</h3><p>Finally, the malware stamps the configuration structure with a version string.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">__builtin_strncpy(&amp;var_318, <span class="string">&quot;V1.1&quot;</span>, <span class="number">4</span>);</span><br><span class="line">ResolveMsvcrt_API(<span class="number">0x5a370cb</span>)(rbx_15 + <span class="number">0x258</span>, &amp;var_318, <span class="number">4</span>); <span class="comment">// memcpy</span></span><br></pre></td></tr></table></figure>
+
+<p>At the end of sub_180002110, the malware has prepared a configuration object containing:</p>
+<ul>
+<li><strong>Target Path:</strong> <code>C:\Windows\Temp\auk.exe</code></li>
+<li><strong>Username:</strong> <code>[Current User]</code></li>
+<li><strong>Computer Name:</strong> <code>[Host Name]</code></li>
+<li><strong>Local IP:</strong> <code>[IP Address]</code></li>
+<li><strong>Bot Version:</strong> V1.1</li>
+</ul>
+<h2 id="3-4-Command-and-Control-C2-Loop"><a href="#3-4-Command-and-Control-C2-Loop" class="headerlink" title="3.4. Command and Control (C2) Loop"></a>3.4. Command and Control (C2) Loop</h2><p>The function <strong>sub_180002460</strong> implements the primary lifecycle of the malware. It performs an initial uniqueness check and then enters an infinite loop to manage C2 communications.</p>
+<h3 id="3-4-1-Persistence-and-Mutex-Check"><a href="#3-4-1-Persistence-and-Mutex-Check" class="headerlink" title="3.4.1. Persistence and Mutex Check"></a>3.4.1. Persistence and Mutex Check</h3><p>At the very beginning of the loop, the malware attempts to ensure only one instance is running.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0x16fe6d88 -&gt; CreateMutexA</span></span><br><span class="line">ResolveKernal32_API(<span class="number">0x16fe6d88</span>)(<span class="number">0</span>, <span class="number">0</span>, <span class="string">&quot;V4.0&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Hash 0xc7e0265e -&gt; GetLastError</span></span><br><span class="line"><span class="keyword">if</span> (ResolveKernal32_API(<span class="number">0xc7e0265e</span>)() == <span class="number">0xb7</span>) <span class="comment">// ERROR_ALREADY_EXISTS</span></span><br><span class="line">    <span class="keyword">return</span>; <span class="comment">// Exit if another instance is running</span></span><br></pre></td></tr></table></figure>
+<p>It creates a mutex named <strong>“V4.0”</strong>. If GetLastError returns 0xB7 (ERROR_ALREADY_EXISTS), the malware terminates, preventing multiple infections on the same host.</p>
+<h3 id="3-4-2-Main-Execution-Loop"><a href="#3-4-2-Main-Execution-Loop" class="headerlink" title="3.4.2. Main Execution Loop"></a>3.4.2. Main Execution Loop</h3><p>If the mutex is successfully acquired, the malware enters an infinite while(true) loop (Address 0x180002506). This loop orchestrates the connection attempts and command processing.</p>
+<p><strong>Session Cleanup:</strong><br>The first action within every iteration of this loop is a call to <strong>sub_180001e70</strong>.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">&#123;</span><br><span class="line">    sub_180001e70((<span class="type">char</span>*)arg1 + <span class="number">0x30</span>); <span class="comment">// Cleanup previous session state</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// ... Proceed to Connection Logic</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>This function resets the internal state by iterating through active task objects and releasing their memory using HeapFree. This ensures that if a connection fails or a command finishes, the next attempt starts with a clean slate.</p>
+<h3 id="3-4-3-Connection-Establishment-Redundancy-Logic"><a href="#3-4-3-Connection-Establishment-Redundancy-Logic" class="headerlink" title="3.4.3. Connection Establishment (Redundancy Logic)"></a>3.4.3. Connection Establishment (Redundancy Logic)</h3><p>The function <strong>sub_180003720</strong> is responsible for establishing the network connection to the Command &amp; Control server. It employs standard Windows Sockets (Winsock) but implements a <strong>failover strategy</strong> to ensure connectivity even if the primary server is down.</p>
+<h4 id="Socket-Creation"><a href="#Socket-Creation" class="headerlink" title="Socket Creation"></a>Socket Creation</h4><p>The function begins by creating a standard TCP&#x2F;IPv4 socket:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Hash 0x1451fe69 -&gt; socket</span></span><br><span class="line"><span class="comment">// AF_INET (2), SOCK_STREAM (1), IPPROTO_TCP (6)</span></span><br><span class="line">SOCKET s = ResolveWS2_32_API(<span class="number">0x1451fe69</span>)(<span class="number">2</span>, <span class="number">1</span>, <span class="number">6</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="Failover-Configuration"><a href="#Failover-Configuration" class="headerlink" title="Failover Configuration"></a>Failover Configuration</h4><p>The malware accesses a configuration structure pointed to by (arg1 + 0x28). It attempts to connect to up to three different C2 servers sequentially. If one attempt fails, it closes the socket (closesocket), creates a new one, and tries the next configuration slot.</p>
+<p><strong>1. Primary C2 Attempt:</strong></p>
+<ul>
+<li><strong>Address Offset</strong>: 0x30 -&gt; <strong>10.21.72.11</strong></li>
+<li><strong>Port Offset</strong>: 0x24 -&gt; 0x0035 -&gt; <strong>53</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Attempt 1: Connect to 10.21.72.11:53</span></span><br><span class="line"><span class="keyword">if</span> (sub_1800035f0(ctx, config + <span class="number">0x30</span>) == <span class="number">1</span>) &#123; </span><br><span class="line">    sub_180003490(ctx, config + <span class="number">0x30</span>, *(<span class="type">uint16_t</span>*)(config + <span class="number">0x24</span>));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>; <span class="comment">// Success</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2. Secondary C2 Attempt (If Primary Fails):</strong></p>
+<ul>
+<li><strong>Address Offset</strong>: 0x58 -&gt; <strong>5.34.176.199</strong></li>
+<li><strong>Port Offset</strong>: 0x26 -&gt; 0x01BB -&gt; <strong>443</strong></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ResolveWS2_32_API(<span class="number">0x5de2e91f</span>)(socket); <span class="comment">// closesocket</span></span><br><span class="line"><span class="comment">// ... create new socket ...</span></span><br><span class="line"><span class="comment">// Attempt 2: Connect to 5.34.176.199:443</span></span><br><span class="line">sub_180003490(ctx, config + <span class="number">0x58</span>, *(<span class="type">uint16_t</span>*)(config + <span class="number">0x26</span>));</span><br></pre></td></tr></table></figure>
+<p><strong>3. Tertiary C2 Attempt (If Secondary Fails):</strong></p>
+<ul>
+<li><strong>Address Offset</strong>: 0x80 -&gt; <strong>45.134.17.171</strong></li>
+<li><strong>Port Offset</strong>: 0x06 -&gt; 0x01BB -&gt; <strong>443</strong></li>
+<li><strong>Logging</strong>: Before this attempt, it formats the string %s:%d (using wsprintfA from User32) and logs it via OutputDebugStringA, indicating a last-resort attempt.</li>
+</ul>
+<h4 id="Helper-Functions"><a href="#Helper-Functions" class="headerlink" title="Helper Functions"></a>Helper Functions</h4><ol>
+<li><strong>sub_1800035f0 (DNS Resolution)</strong>:<ul>
+<li><strong>Hash 0xc3de085a</strong> -&gt; <strong>gethostbyname</strong>: Resolves a hostname to an IP.</li>
+<li><strong>Hash 0xbf9998e1</strong> -&gt; <strong>inet_addr</strong> (or similar IP copy): Copies the IP address.</li>
+<li>It logs “Gethos failed” if resolution fails.</li>
+</ul>
+</li>
+<li><strong>sub_180003490 (Socket Connect)</strong>:<ul>
+<li><strong>Hash 0x79b772c</strong> -&gt; <strong>htons</strong>: Converts port number to network byte order.</li>
+<li><strong>Hash 0xbf92328a</strong> -&gt; <strong>inet_addr</strong>: Converts string IP to integer.</li>
+<li><strong>Hash 0xcfb6b06a</strong> -&gt; <strong>connect</strong>: Attempts the TCP connection.</li>
+<li>It logs “Tcp failed” or “Tcp succeed” using OutputDebugStringA.</li>
+</ul>
+</li>
+</ol>
+<h2 id="3-5-C2-Communication-Protocol"><a href="#3-5-C2-Communication-Protocol" class="headerlink" title="3.5. C2 Communication Protocol"></a>3.5. C2 Communication Protocol</h2><p>Once the network socket is established, the malware enforces a strict encrypted communication protocol. This ensures the integrity and confidentiality of the command stream.</p>
+<h3 id="3-5-1-Encryption-Mechanism"><a href="#3-5-1-Encryption-Mechanism" class="headerlink" title="3.5.1. Encryption Mechanism"></a>3.5.1. Encryption Mechanism</h3><p>Traffic is encrypted using the Windows <strong>CryptoAPI</strong> (advapi32.dll). The function <strong>sub_180001b10</strong> handles the cryptographic operations:</p>
+<ol>
+<li><strong>Algorithm</strong>: The malware imports a hardcoded key using CryptImportKey with parameters (0x660e), identifying the algorithm as <strong>AES-128</strong>.</li>
+<li><strong>Hashing</strong>: Before encryption, the payload is hashed (CryptCreateHash &#x2F; CryptHashData) to generate a signature, likely for integrity verification.</li>
+<li><strong>Operation</strong>: The data is encrypted using CryptEncrypt before being sent and decrypted using CryptDecrypt upon receipt.<br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/win32/seccrypto/alg-id">ALG_ID (Wincrypt.h) - Win32 apps | Microsoft Learn</a></li>
+</ol>
+<h3 id="3-5-2-Handshake-and-Initial-Packets"><a href="#3-5-2-Handshake-and-Initial-Packets" class="headerlink" title="3.5.2. Handshake and Initial Packets"></a>3.5.2. Handshake and Initial Packets</h3><p>The main loop (sub_180002574) reveals the initial handshake sequence performed immediately after a successful connection.</p>
+<p><strong>1. Initial Beacon (sub_180003290)</strong><br>The function sub_180003290 is called first. It packages the victim profile (User, OS, IP) created in the Constructor, encrypts it, and transmits it to the C2.</p>
+<p><strong>2. Status Update Packets (Types 8 and 5)</strong><br>If the beacon is sent successfully (rax_12 !&#x3D; 0), the malware performs two status checks and sends specific packet types using the packet builder function <strong>sub_180001cf0</strong>.</p>
+<ul>
+<li><strong>Packet Type 8 (Initial Status):</strong><br>  Checks the flag at offset 0x31. If 0, it sends a packet with ID <strong>8</strong>.</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sub_180001cf0(Command_ID, Data, Size, Output)</span></span><br><span class="line">sub_180001cf0(<span class="number">8</span>, (<span class="type">char</span>*)arg1 + <span class="number">0x91</span>, <span class="number">1</span>, &amp;var_c0);</span><br><span class="line">sub_180001fb0(...); <span class="comment">// Send</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>Packet Type 5 (Extended Info):</strong><br>  Checks the pointer at offset 0x20. If NULL, it sends a packet with ID <strong>5</strong>.</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sub_180001cf0(<span class="number">5</span>, (<span class="type">char</span>*)arg1 + <span class="number">0x91</span>, <span class="number">1</span>, &amp;var_bc);</span><br><span class="line">sub_180001fb0(...); <span class="comment">// Send</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-5-3-Packet-Construction-sub-180001cf0"><a href="#3-5-3-Packet-Construction-sub-180001cf0" class="headerlink" title="3.5.3. Packet Construction (sub_180001cf0)"></a>3.5.3. Packet Construction (sub_180001cf0)</h3><p>The helper function <strong>sub_180001cf0</strong> acts as the generic “Packet Builder”. It performs the following steps:</p>
+<ol>
+<li><strong>Allocation</strong>: Allocates memory for the packet buffer.</li>
+<li><strong>Header Generation</strong>: Writes the Command ID (e.g., 8, 5, or 13) into the header.</li>
+<li><strong>Encryption</strong>: Calls sub_180001b10 to encrypt the payload and header.</li>
+<li><strong>Finalization</strong>: Returns the pointer to the encrypted blob, ready for transmission via sub_180001fb0 (Send).</li>
+</ol>
+<h2 id="3-6-Command-Dispatcher"><a href="#3-6-Command-Dispatcher" class="headerlink" title="3.6. Command Dispatcher"></a>3.6. Command Dispatcher</h2><p>The core functionality of the malware lies in its ability to receive and execute commands from the C2 server. The loop in sub_180002460 parses incoming packets and dispatches them based on a <strong>Command ID</strong> (rax_35 in the decompiled code).</p>
+<h3 id="3-6-1-Command-Table"><a href="#3-6-1-Command-Table" class="headerlink" title="3.6.1. Command Table"></a>3.6.1. Command Table</h3><p>The malware parses the Command ID (extracted from the received packet) and executes the corresponding action. The supported commands are:</p>
+<table>
+<thead>
+<tr>
+<th>Command ID</th>
+<th>Action</th>
+<th>Technical Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0x03</strong></td>
+<td><strong>Sleep</strong></td>
+<td>Enters a sleep state for a specified duration (default 0xea60 &#x2F; 60,000 ms).</td>
+</tr>
+<tr>
+<td><strong>0x04</strong></td>
+<td><strong>Execute Shellcode</strong></td>
+<td>Sets an execution flag (Offset 0x90), changes memory permissions to RWX (VirtualProtect), and executes a buffer directly in the current process.</td>
+</tr>
+<tr>
+<td><strong>0x05</strong></td>
+<td><strong>Process Injection</strong></td>
+<td><strong>Major Capability</strong>. Calls sub_180003ae0, which spawns a suspended svchost.exe, writes payload memory, and resumes the thread (Process Hollowing).</td>
+</tr>
+<tr>
+<td><strong>0x06</strong></td>
+<td><strong>Memory Setup</strong></td>
+<td>Calls VirtualProtect to set memory permissions (RWX). Likely used for staging payloads.</td>
+</tr>
+<tr>
+<td><strong>0x07</strong></td>
+<td><strong>Memory Execution</strong></td>
+<td>Similar to 0x06 but sets a specific internal state flag (Offset 0x9C) indicating readiness or execution.</td>
+</tr>
+<tr>
+<td><strong>0x08</strong></td>
+<td><strong>Load Module</strong></td>
+<td>Allocates memory, copies data (memcpy), sets permissions, and executes a module entry point. Used for loading plugins.</td>
+</tr>
+<tr>
+<td><strong>0x09</strong></td>
+<td><strong>Reset&#x2F;Cleanup</strong></td>
+<td>Calls sub_180001e70 to free allocated objects and reset the internal plugin list.</td>
+</tr>
+<tr>
+<td><strong>0x0A</strong> (10)</td>
+<td><strong>Send Status</strong></td>
+<td>Sends a heartbeat or status update packet (Packet Type 8) to the C2.</td>
+</tr>
+<tr>
+<td><strong>0x0B</strong> (11)</td>
+<td><strong>Enumerate Sessions</strong></td>
+<td>Calls sub_180002e40 to list active user sessions using WTSEnumerateSessionsA.</td>
+</tr>
+<tr>
+<td><strong>0x0C</strong> (12)</td>
+<td><strong>Spawn Process</strong></td>
+<td>Calls sub_180003d70 to execute a command or file using ShellExecute or CreateProcess. Checks exit code via GetExitCodeProcess.</td>
+</tr>
+<tr>
+<td><strong>0x0D</strong> (13)</td>
+<td><strong>Download File</strong></td>
+<td><strong>Dropper Capability</strong>. Creates a file (CreateFileA), writes received data (WriteFile), and closes the handle.</td>
+</tr>
+<tr>
+<td><strong>0x0E</strong> (14)</td>
+<td><strong>Terminate</strong></td>
+<td>Closes the connection and sets an exit flag to terminate the malware instance.</td>
+</tr>
+</tbody></table>
+<h3 id="3-6-2-Advanced-Injection-sub-180003d70"><a href="#3-6-2-Advanced-Injection-sub-180003d70" class="headerlink" title="3.6.2. Advanced Injection (sub_180003d70)"></a>3.6.2. Advanced Injection (sub_180003d70)</h3><p>The function <strong>sub_180003d70</strong> implements a classic <strong>Process Hollowing &#x2F; Injection</strong> technique:</p>
+<ol>
+<li><strong>Target Selection</strong>: It targets <strong>\svchost.exe</strong>.</li>
+<li><strong>Process Creation</strong>: Calls CreateProcessA with the CREATE_SUSPENDED flag (0x4).</li>
+<li><strong>Memory Allocation</strong>: Calls VirtualAllocEx in the remote process.</li>
+<li><strong>Code Writing</strong>: Calls WriteProcessMemory to inject the payload.</li>
+<li><strong>Execution</strong>: Calls CreateRemoteThread (or ResumeThread) to execute the malware inside the trusted svchost.exe process.</li>
+</ol>
+<h1 id="4-Conclusion"><a href="#4-Conclusion" class="headerlink" title="4. Conclusion"></a>4. Conclusion</h1><p>The analysis of the <strong>Aurat</strong> challenge identifies the binary as a complex, modular <strong>backdoor</strong> written in C++. The design of this specimen exhibits a high degree of sophistication, characterized by the use of Object-Oriented programming patterns, custom dynamic API resolution for evasion, and a resilient, encrypted network communication protocol.</p>
+<p><strong>Technical Recap:</strong></p>
+<ol>
+<li><strong>Entry &amp; Initialization:</strong> The malware initializes by repairing its own headers in memory and resolving necessary Windows APIs dynamically to hide its intent. It ensures a single instance runs using the Mutex <strong>V4.0</strong>.</li>
+<li><strong>Victim Profiling:</strong> Before connecting, it aggregates victim data (Hostname, IP, OS, User) into a specialized configuration structure.</li>
+<li><strong>C2 Protocol:</strong> It attempts connections to <strong>10.21.72.11</strong>, <strong>5.34.176.199</strong>, and <strong>45.134.17.171</strong>. All traffic is hashed for integrity and encrypted with <strong>AES-128</strong>.</li>
+<li><strong>Payload Execution:</strong> The command dispatcher supports 15 distinct commands. The most critical capability is <strong>Process Injection</strong>, where the malware spawns a suspended svchost.exe, injects a payload, and resumes the thread to mask its activity within a legitimate system process.</li>
+</ol>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AuRAT/">AuRAT</a><a class="post-meta__tags" href="/tags/Malops/">Malops</a><a class="post-meta__tags" href="/tags/Backdoor/">Backdoor</a></div></div><div class="post-reward" style="margin-top: 20px;"><div style="display: flex; justify-content: center;"><a class="custom-reward-btn" href="https://paypal.me/abishg24" target="_blank"><i class="fab fa-paypal"></i><span>Support Me</span></a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/Gamaredon/" title="Gamaredon"><img class="cover" src="/Gamaredon/cover.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">Next</div><div class="info-item-2">Gamaredon</div></div><div class="info-2"><div class="info-item-1">Technical analysis of a **Gamaredon** HTA dropper. The malware executes a multi-stage infection chain (HTA ->VBS -> powerShell) that abuses legitimate tunneling services (Microsoft Dev Tunnels, Cloudflare) to evade detection and exfiltrate system data.</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/profile.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="avatar"/></div><div class="author-info-name">Profzzor</div><div class="author-info-description">Defensive</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">13</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://paypal.me/abishg24"><i class="fab fa-paypal"></i><span>Support Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/profzzor" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://x.com/Profzzr" target="_blank" title="X"><i class="fab fa-x-twitter"></i></a><a class="social-icon" href="https://youtube.com/@Profzzor" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a><a class="social-icon" href="https://twitch.tv/profzzor" target="_blank" title="Twitch"><i class="fab fa-twitch"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">I am currently seeking new job opportunities. If you know of any roles that align with my skills and experience, please feel free to connect. Thank you for your support.</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Contents</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Executive-Summary"><span class="toc-text">1. Executive Summary</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-Technical-Analysis"><span class="toc-text">2. Technical Analysis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1-Sample-Overview"><span class="toc-text">2.1. Sample Overview</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2-Header-Reconstruction"><span class="toc-text">2.2. Header Reconstruction</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-1-DOS-Header-Reconstruction"><span class="toc-text">2.2.1 DOS Header Reconstruction</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#e-lfanew-Field-Analysis"><span class="toc-text">e_lfanew Field Analysis</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-2-NT-Headers-and-PE-Signature"><span class="toc-text">2.2.2 NT Headers and PE Signature</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3-File-Identification"><span class="toc-text">2.3. File Identification</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4-Static-Analysis"><span class="toc-text">2.4. Static Analysis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-1-Entry-Point-Analysis"><span class="toc-text">2.4.1. Entry Point Analysis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-2-Analysis-of-User-Code-DllMain"><span class="toc-text">2.4.2. Analysis of User Code (DllMain)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-3-Dynamic-API-Resolution-API-Hashing"><span class="toc-text">2.4.3. Dynamic API Resolution (API Hashing)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Module-Base-Resolution"><span class="toc-text">Module Base Resolution</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hashing-Algorithm"><span class="toc-text">Hashing Algorithm</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash-Decryption"><span class="toc-text">Hash Decryption</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reconstructed-DllMain-Logic"><span class="toc-text">Reconstructed DllMain Logic</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-DllMain"><span class="toc-text">3. DllMain</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-Thread-Entry-Point-sub-180003f60"><span class="toc-text">3.1. Thread Entry Point (sub_180003f60)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-1-Object-Allocation"><span class="toc-text">3.1.1. Object Allocation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-2-Initialization-and-Execution"><span class="toc-text">3.1.2. Initialization and Execution</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-Modular-API-Resolution"><span class="toc-text">3.2. Modular API Resolution</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-Payload-Initialization-Constructor-Analysis"><span class="toc-text">3.3. Payload Initialization (Constructor Analysis)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-1-Network-Initialization"><span class="toc-text">3.3.1. Network Initialization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-2-Target-Path-Generation"><span class="toc-text">3.3.2. Target Path Generation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-3-System-Reconnaissance-Victim-Profiling"><span class="toc-text">3.3.3. System Reconnaissance (Victim Profiling)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-4-Local-IP-Discovery"><span class="toc-text">3.3.4. Local IP Discovery</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-5-Bot-Versioning"><span class="toc-text">3.3.5. Bot Versioning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-Command-and-Control-C2-Loop"><span class="toc-text">3.4. Command and Control (C2) Loop</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-1-Persistence-and-Mutex-Check"><span class="toc-text">3.4.1. Persistence and Mutex Check</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-2-Main-Execution-Loop"><span class="toc-text">3.4.2. Main Execution Loop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-3-Connection-Establishment-Redundancy-Logic"><span class="toc-text">3.4.3. Connection Establishment (Redundancy Logic)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Socket-Creation"><span class="toc-text">Socket Creation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Failover-Configuration"><span class="toc-text">Failover Configuration</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Helper-Functions"><span class="toc-text">Helper Functions</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-C2-Communication-Protocol"><span class="toc-text">3.5. C2 Communication Protocol</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-1-Encryption-Mechanism"><span class="toc-text">3.5.1. Encryption Mechanism</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-2-Handshake-and-Initial-Packets"><span class="toc-text">3.5.2. Handshake and Initial Packets</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-3-Packet-Construction-sub-180001cf0"><span class="toc-text">3.5.3. Packet Construction (sub_180001cf0)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-Command-Dispatcher"><span class="toc-text">3.6. Command Dispatcher</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-1-Command-Table"><span class="toc-text">3.6.1. Command Table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-2-Advanced-Injection-sub-180003d70"><span class="toc-text">3.6.2. Advanced Injection (sub_180003d70)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-Conclusion"><span class="toc-text">4. Conclusion</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/AuRAT/" title="Aurat"><img src="/AuRAT/cover.PNG" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Aurat"/></a><div class="content"><a class="title" href="/AuRAT/" title="Aurat">Aurat</a><time datetime="2026-01-05T00:00:00.000Z" title="Created 2026-01-05 00:00:00">2026-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/Gamaredon/" title="Gamaredon"><img src="/Gamaredon/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Gamaredon"/></a><div class="content"><a class="title" href="/Gamaredon/" title="Gamaredon">Gamaredon</a><time datetime="2025-12-10T00:00:00.000Z" title="Created 2025-12-10 00:00:00">2025-12-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/HolyCat/" title="Holycat"><img src="/HolyCat/cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Holycat"/></a><div class="content"><a class="title" href="/HolyCat/" title="Holycat">Holycat</a><time datetime="2025-12-02T00:00:00.000Z" title="Created 2025-12-02 00:00:00">2025-12-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/the-payload/" title="The Payload"><img src="/the-payload/cover.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="The Payload"/></a><div class="content"><a class="title" href="/the-payload/" title="The Payload">The Payload</a><time datetime="2025-09-26T00:00:00.000Z" title="Created 2025-09-26 00:00:00">2025-09-26</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Profzzor</span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Reading Mode"><i class="fas fa-book-open"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading Database</span></div><div class="local-search-input"><input placeholder="Search for Posts" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
