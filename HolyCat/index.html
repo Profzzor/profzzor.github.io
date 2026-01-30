@@ -1,35 +1,35 @@
 <!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Holycat | Profzzor</title><meta name="author" content="Profzzor"><meta name="copyright" content="Profzzor"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="A deep dive into HolyCat Ransomware, a Rust binary that encrypts user files with the .HC extension. The analysis uncovers its reliance on Discord for key exfiltration and dissects the cryptographic ro">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Holycat">
-<meta property="og:url" content="http://profzzor.github.io/HolyCat/index.html">
+<meta property="og:url" content="https://profzzor.github.io/HolyCat/index.html">
 <meta property="og:site_name" content="Profzzor">
 <meta property="og:description" content="A deep dive into HolyCat Ransomware, a Rust binary that encrypts user files with the .HC extension. The analysis uncovers its reliance on Discord for key exfiltration and dissects the cryptographic ro">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://profzzor.github.io/HolyCat/cover.jpg">
+<meta property="og:image" content="https://profzzor.github.io/HolyCat/cover.jpg">
 <meta property="article:published_time" content="2025-12-02T00:00:00.000Z">
-<meta property="article:modified_time" content="2026-01-30T13:35:20.508Z">
+<meta property="article:modified_time" content="2026-01-30T13:52:28.887Z">
 <meta property="article:author" content="Profzzor">
 <meta property="article:tag" content="Discord">
 <meta property="article:tag" content="HolyCat">
 <meta property="article:tag" content="Ransomware">
 <meta property="article:tag" content="Rust">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://profzzor.github.io/HolyCat/cover.jpg"><script type="application/ld+json">{
+<meta name="twitter:image" content="https://profzzor.github.io/HolyCat/cover.jpg"><script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "Holycat",
-  "url": "http://profzzor.github.io/HolyCat/",
-  "image": "http://profzzor.github.io/HolyCat/cover.jpg",
+  "url": "https://profzzor.github.io/HolyCat/",
+  "image": "https://profzzor.github.io/HolyCat/cover.jpg",
   "datePublished": "2025-12-02T00:00:00.000Z",
-  "dateModified": "2026-01-30T13:35:20.508Z",
+  "dateModified": "2026-01-30T13:52:28.887Z",
   "author": [
     {
       "@type": "Person",
       "name": "Profzzor",
-      "url": "http://profzzor.github.io"
+      "url": "https://profzzor.github.io"
     }
   ]
-}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="http://profzzor.github.io/HolyCat/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><meta name="google-site-verification" content="nhQl74qB5kTasevDkFUKXJdPMWL-84-KgUzefAFlybM"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://profzzor.github.io/HolyCat/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//www.google-analytics.com" crossorigin=""/><meta name="google-site-verification" content="nhQl74qB5kTasevDkFUKXJdPMWL-84-KgUzefAFlybM"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
     (() => {
       
     const saveToLocal = {
