@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://profzzor.github.io/about/index.html</loc>
+    
+    <lastmod>2026-01-30</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://profzzor.github.io/categories/index.html</loc>
     
     <lastmod>2026-01-30</lastmod>
@@ -20,7 +29,7 @@
   </url>
   
   <url>
-    <loc>http://profzzor.github.io/about/index.html</loc>
+    <loc>http://profzzor.github.io/the-payload/</loc>
     
     <lastmod>2026-01-30</lastmod>
     
@@ -30,15 +39,6 @@
   
   <url>
     <loc>http://profzzor.github.io/HolyCat/</loc>
-    
-    <lastmod>2026-01-30</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://profzzor.github.io/the-payload/</loc>
     
     <lastmod>2026-01-30</lastmod>
     
@@ -111,27 +111,6 @@
   </url>
   
   <url>
-    <loc>http://profzzor.github.io/tags/Gamaredon/</loc>
-    <lastmod>2026-01-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://profzzor.github.io/tags/VBScript/</loc>
-    <lastmod>2026-01-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://profzzor.github.io/tags/infostealer/</loc>
-    <lastmod>2026-01-30</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://profzzor.github.io/tags/HolyCat/</loc>
     <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
@@ -154,6 +133,27 @@
   
   <url>
     <loc>http://profzzor.github.io/tags/Discord/</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://profzzor.github.io/tags/Gamaredon/</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://profzzor.github.io/tags/VBScript/</loc>
+    <lastmod>2026-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://profzzor.github.io/tags/infostealer/</loc>
     <lastmod>2026-01-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
