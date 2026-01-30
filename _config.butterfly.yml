@@ -692,7 +692,7 @@ crisp:
 baidu_analytics:
 
 # https://analytics.google.com/analytics/web/
-google_analytics:
+google_analytics: G-921QF8PHT5
 
 # https://www.cloudflare.com/zh-tw/web-analytics/
 cloudflare_analytics:
@@ -727,10 +727,10 @@ google_tag_manager:
 
 # Google Adsense
 google_adsense:
-  enable: false
+  enable: true
   auto_ads: true
   js: https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js
-  client:
+  client: ca-pub-7808274774731635
   enable_page_level_ads: true
 
 # Insert ads manually
@@ -748,8 +748,8 @@ ad:
 # --------------------------------------
 
 site_verification:
-  # - name: google-site-verification
-  #   content: xxxxxx
+  - name: google-site-verification
+    content: nhQl74qB5kTasevDkFUKXJdPMWL-84-KgUzefAFlybM
   # - name: baidu-site-verification
   #   content: xxxxxxx
 
