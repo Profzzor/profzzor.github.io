@@ -54,6 +54,7 @@ The strange filenames you see are Korean text that has been "mojibaked" (encoded
 | ---------------- | --------------------- | -------------------------------------------- | ---------------------- |
 | `╛╧╚ú.txt.lnk`   | `보호.txt.lnk`          | `Protection.txt.lnk` (or `Security.txt.lnk`) | **Malicious Shortcut** |
 | `▒╣╝╝░φ┴÷╝¡.pdf` | `발신 공지서.pdf`          | `Dispatch Notice.pdf`                        | **Decoy Document**     |
+
 The presence of the decoy PDF (Dispatch Notice.pdf) provides contextual legitimacy. **Crucially, this PDF is password-protected,** an intentional step by the threat actor to force a second action. The victim, unable to open the document, is compelled to click the seemingly harmless companion file, the shortcut (Protection.txt.lnk), which is disguised as a text document containing the password or instructions needed to open the PDF. The critical deception then lies in the file extension: the victim sees the seemingly harmless .txt extension, failing to recognize that the file is an executable .lnk (shortcut) object.
 ### LNK File Deconstruction
 
