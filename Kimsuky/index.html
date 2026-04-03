@@ -7,7 +7,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://profzzor.github.io/Kimsuky/cover.png">
 <meta property="article:published_time" content="2026-03-08T00:00:00.000Z">
-<meta property="article:modified_time" content="2026-03-09T09:12:31.982Z">
+<meta property="article:modified_time" content="2026-04-03T17:28:19.400Z">
 <meta property="article:author" content="Profzzor">
 <meta property="article:tag" content="APT43">
 <meta property="article:tag" content="Enigma">
@@ -23,7 +23,7 @@
   "url": "https://profzzor.github.io/Kimsuky/",
   "image": "https://profzzor.github.io/Kimsuky/cover.png",
   "datePublished": "2026-03-08T00:00:00.000Z",
-  "dateModified": "2026-03-09T09:12:31.982Z",
+  "dateModified": "2026-04-03T17:28:19.400Z",
   "author": [
     {
       "@type": "Person",
@@ -685,7 +685,7 @@ btf.addGlobalFn('pjaxComplete', () => {
 <li><strong>Brave Browser</strong> (Supported but not explicitly checked in this flow)</li>
 </ol>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Attempt 1: Chrome</span></span><br><span class="line">_snscanf(&amp;var_238, <span class="number">0x104</span>, <span class="string">&quot;%s\\chrome.exe&quot;</span>, &amp;filename);</span><br><span class="line"><span class="type">char</span> rax_3 = sub_180004d34(&amp;var_238); <span class="comment">// Verify file existence</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (rax_3 == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// Attempt 2: Edge (fallback)</span></span><br><span class="line">    _snscanf(&amp;var_238, <span class="number">0x104</span>, <span class="string">&quot;%s\\msedge.exe&quot;</span>, &amp;filename);</span><br><span class="line">    <span class="type">char</span> rax_4 = sub_180004d34(&amp;var_238);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>File Verification Function (<code>sub_180004d34</code>):</strong><br>The function <code>sub_180004d34</code> wraps a call to the C runtime library’s <code>_stat32</code> function (visible in the disassembly as <code>sub_18000fafc</code>), which retrieves file information and returns 0 if successful <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/stat-functions?view=msvc-170">Microsoft Learn</a>. This is a standard method for verifying file existence without opening the file.</p>
+<p><strong>File Verification Function (<code>sub_180004d34</code>):</strong><br>The function <code>sub_180004d34</code> wraps a call to the C runtime library’s <code>_stat64</code> function (visible in the disassembly as <code>sub_18000fafc</code>), which retrieves file information and returns 0 if successful <a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/stat-functions?view=msvc-170">Microsoft Learn</a>. This is a standard method for verifying file existence without opening the file.</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Wrapper: sub_180004d34</span></span><br><span class="line"><span class="type">int64_t</span> <span class="title function_">sub_180004d34</span><span class="params">(<span class="type">int16_t</span>* arg1)</span> &#123;</span><br><span class="line">    <span class="type">uint128_t</span> var_48[<span class="number">0x3</span>];</span><br><span class="line">    <span class="comment">// Returns 0 if file exists, non-zero otherwise</span></span><br><span class="line">    result = sub_18000fafc(arg1, &amp;var_48) == <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h5 id="3-Browser-Configuration-Structure-Initialization"><a href="#3-Browser-Configuration-Structure-Initialization" class="headerlink" title="3. Browser Configuration Structure Initialization"></a>3. Browser Configuration Structure Initialization</h5><p>The malware uses <code>sub_1800030d0</code> to populate a <strong>browser-specific configuration structure</strong>, which consolidates all data needed for credential extraction.</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int32_t</span>* <span class="title function_">sub_1800030d0</span><span class="params">(<span class="type">int32_t</span>* arg1, <span class="type">int64_t</span>* arg2)</span></span><br></pre></td></tr></table></figure>
