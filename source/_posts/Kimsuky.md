@@ -1265,7 +1265,7 @@ if (rax_3 == 0) {
 }
 ```
 **File Verification Function (`sub_180004d34`):**
-The function `sub_180004d34` wraps a call to the C runtime library's `_stat32` function (visible in the disassembly as `sub_18000fafc`), which retrieves file information and returns 0 if successful [Microsoft Learn](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/stat-functions?view=msvc-170). This is a standard method for verifying file existence without opening the file.
+The function `sub_180004d34` wraps a call to the C runtime library's `_stat64` function (visible in the disassembly as `sub_18000fafc`), which retrieves file information and returns 0 if successful [Microsoft Learn](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/stat-functions?view=msvc-170). This is a standard method for verifying file existence without opening the file.
 ```c
 // Wrapper: sub_180004d34
 int64_t sub_180004d34(int16_t* arg1) {
