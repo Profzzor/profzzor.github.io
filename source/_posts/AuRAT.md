@@ -20,9 +20,11 @@ This report details the comprehensive technical analysis of the **Aurat** malw
 - **Network Resilience:** The malware operates a robust Command and Control (C2) infrastructure with a **failover mechanism**. It iterates through three hardcoded C2 servers, attempting to tunnel traffic first via **DNS (Port 53)** and falling back to **HTTPS (Port 443)**.
 - **Encrypted Communication:** Network traffic is protected using **AES-128 encryption** via the Windows CryptoAPI, rendering network-based signature detection ineffective without the encryption keys.
 - **Malicious Capabilities:** The malware possesses a versatile command set allowing it to:
-    - **Inject Malicious Code:** It performs process hollowing against **svchost.exe** to execute payloads stealthily.
-    - **Download & Execute:** It functions as a dropper, capable of saving files to disk (\Temp\auk.exe) or loading modules directly into memory.
-    - **Reconnaissance:** It actively harvests system metadata, including usernames, OS versions, and active user sessions.
+    - Self-Verification: Before any C2 communication, the malware verifies it is running inside svchost.exe under the SYSTEM account. If not, it exits immediately — confirming this DLL is designed to be injected by an external loader. 
+    - Execute Shellcode: Receives shellcode from C2, stages it in memory via VirtualProtect (PAGE_EXECUTE_READWRITE), and executes it in-process across a chained opcode sequence (5 → 6 → 7). 
+    - Token Impersonation: Steals active user session tokens via WTSQueryUserToken and spawns processes under the stolen identity using CreateProcessAsUserA. 
+    - Download & Execute: Drops files to disk and loads plugin modules directly into memory.
+    - Reconnaissance: Harvests usernames, OS versions, computer names, local IP, and active session data.
 # 2. Technical Analysis
 
 ## 2.1. Sample Overview
@@ -499,38 +501,49 @@ The helper function **sub_180001cf0** acts as the generic "Packet Builder". It
 3. **Encryption**: Calls sub_180001b10 to encrypt the payload and header.
 4. **Finalization**: Returns the pointer to the encrypted blob, ready for transmission via sub_180001fb0 (Send).
 ## 3.6. Command Dispatcher
-
 The core functionality of the malware lies in its ability to receive and execute commands from the C2 server. The loop in sub_180002460 parses incoming packets and dispatches them based on a **Command ID** (rax_35 in the decompiled code).
 ### 3.6.1. Command Table
-The malware parses the Command ID (extracted from the received packet) and executes the corresponding action. The supported commands are:
 
-| Command ID    | Action                 | Technical Description                                                                                                                               |
-| ------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **0x03**      | **Sleep**              | Enters a sleep state for a specified duration (default 0xea60 / 60,000 ms).                                                                         |
-| **0x04**      | **Execute Shellcode**  | Sets an execution flag (Offset 0x90), changes memory permissions to RWX (VirtualProtect), and executes a buffer directly in the current process.    |
-| **0x05**      | **Process Injection**  | **Major Capability**. Calls sub_180003ae0, which spawns a suspended svchost.exe, writes payload memory, and resumes the thread (Process Hollowing). |
-| **0x06**      | **Memory Setup**       | Calls VirtualProtect to set memory permissions (RWX). Likely used for staging payloads.                                                             |
-| **0x07**      | **Memory Execution**   | Similar to 0x06 but sets a specific internal state flag (Offset 0x9C) indicating readiness or execution.                                            |
-| **0x08**      | **Load Module**        | Allocates memory, copies data (memcpy), sets permissions, and executes a module entry point. Used for loading plugins.                              |
-| **0x09**      | **Reset/Cleanup**      | Calls sub_180001e70 to free allocated objects and reset the internal plugin list.                                                                   |
-| **0x0A** (10) | **Send Status**        | Sends a heartbeat or status update packet (Packet Type 8) to the C2.                                                                                |
-| **0x0B** (11) | **Enumerate Sessions** | Calls sub_180002e40 to list active user sessions using WTSEnumerateSessionsA.                                                                       |
-| **0x0C** (12) | **Spawn Process**      | Calls sub_180003d70 to execute a command or file using ShellExecute or CreateProcess. Checks exit code via GetExitCodeProcess.                      |
-| **0x0D** (13) | **Download File**      | **Dropper Capability**. Creates a file (CreateFileA), writes received data (WriteFile), and closes the handle.                                      |
-| **0x0E** (14) | **Terminate**          | Closes the connection and sets an exit flag to terminate the malware instance.                                                                      |
-### 3.6.2. Advanced Injection (sub_180003d70)
-The function **sub_180003d70** implements a classic **Process Hollowing / Injection** technique:
-1. **Target Selection**: It targets **\svchost.exe**.
-2. **Process Creation**: Calls CreateProcessA with the CREATE_SUSPENDED flag (0x4).
-3. **Memory Allocation**: Calls VirtualAllocEx in the remote process.
-4. **Code Writing**: Calls WriteProcessMemory to inject the payload.
-5. **Execution**: Calls CreateRemoteThread (or ResumeThread) to execute the malware inside the trusted svchost.exe process.
+|Command ID|Action|Technical Description|
+|---|---|---|
+|**0x03**|**Sleep / Terminate**|Multiplies received value by 0xea60 (60,000ms). If non-zero, closes socket and sleeps. If zero, sets exit flag and terminates.|
+|**0x04**|**Execute Shellcode**|Sets execution flag at offset 0x90, calls VirtualProtect(RWX) on the payload buffer, then executes it directly in the current process.|
+|**0x05**|**Payload Staging**|Calls sub_180003ae0 to copy the received payload into the context buffer and reads svchost.exe from disk for PE layout reference. No execution occurs at this stage.|
+|**0x06**|**Shellcode Execution**|Verifies staged payload exists, calls VirtualProtect(RWX), then executes the buffer directly inside the malware's own process.|
+|**0x07**|**Shellcode Execution + Flag**|Identical to 0x06 but additionally sets an internal state flag signaling execution completion.|
+|**0x08**|**Load Plugin Module**|Allocates a memory slot, copies received data via memcpy, sets VirtualProtect(RWX), executes the module entry point, and registers it in the plugin slot array.|
+|**0x09**|**Reset / Cleanup**|Calls sub_180001e70 to free all allocated plugin objects, resets the plugin counter and slot arrays.|
+|**0x0A**|**Send Heartbeat**|Builds and sends a status packet (type 8) containing the OS version flag back to the C2.|
+|**0x0B**|**Token Impersonation + Process Spawn**|Major Capability. Enumerates active sessions (WTSEnumerateSessionsA), steals the active user token (WTSQueryUserToken), drops a file to disk (CreateFileA + WriteFile), then spawns a process under the stolen token identity (CreateProcessAsUserA).|
+|**0x0C**|**Spawn Process**|Calls ShellExecute/CreateProcess to run a command or file. Checks exit code via GetExitCodeProcess and reports result back to C2 via packet type 0xB.|
+|**0x0D**|**Drop File to Disk**|Creates a file at the configured path (CreateFileA with GENERIC_WRITE), writes the received payload (WriteFile), then closes the handle.|
+|**0x0E**|**Terminate**|Clears the payload buffer pointer at offset 0x20 and sets the exit flag at offset 0x90, causing the main loop to exit.|
+### 3.6.2. Shellcode Execution Chain (Opcodes 5, 6, 7)
+The malware implements an in-process shellcode execution capability spread across three opcodes that must be triggered in sequence by the C2 operator.
+
+**Opcode 5 — Staging (sub_180003ae0)**
+
+When the C2 sends opcode 5, the malware calls `sub_180003ae0`, which performs the following:
+1. Copies the received payload from the C2 into an internal context buffer (`arg1+0x70`)
+2. Stores the payload size at `arg1+0x18` and the buffer pointer at `arg1+0x20`
+3. Calls sub_180003d70 to read the legitimate svchost.exe binary from disk and bundles it with the context struct — the complete bundle is sent to the C2 as opcode 6. The exact purpose of sending the svchost.exe bytes to C2 is unclear from the implant code alone, as the C2 server logic is not available for analysis.
+4. Reports staging status back to the C2
+
+No execution happens at this stage.
+
+**Opcode 6 — Execution**
+When the C2 sends opcode 6, the dispatcher:
+1. Checks that `arg1+0x18` (size) and `arg1+0x20` (buffer) are populated — meaning opcode 5 must have run first
+2. Calls `VirtualProtect` with flag `0x40` (`PAGE_EXECUTE_READWRITE`) on the buffer
+3. Directly calls the buffer as a function — executing the shellcode inside the malware's own process
+
+**Opcode 7 — Execution + State Flag**
+Identical to opcode 6 but additionally sets an internal state flag, likely signaling to other components that execution has completed.
 # 4. Conclusion
-
 The analysis of the **Aurat** challenge identifies the binary as a complex, modular **backdoor** written in C++. The design of this specimen exhibits a high degree of sophistication, characterized by the use of Object-Oriented programming patterns, custom dynamic API resolution for evasion, and a resilient, encrypted network communication protocol.
 
 **Technical Recap:**
 1. **Entry & Initialization:** The malware initializes by repairing its own headers in memory and resolving necessary Windows APIs dynamically to hide its intent. It ensures a single instance runs using the Mutex **V4.0**.
 2. **Victim Profiling:** Before connecting, it aggregates victim data (Hostname, IP, OS, User) into a specialized configuration structure.
 3. **C2 Protocol:** It attempts connections to **10.21.72.11**, **5.34.176.199**, and **45.134.17.171**. All traffic is hashed for integrity and encrypted with **AES-128**.
-4. **Payload Execution:** The command dispatcher supports 15 distinct commands. The most critical capability is **Process Injection**, where the malware spawns a suspended svchost.exe, injects a payload, and resumes the thread to mask its activity within a legitimate system process.
+4. **Payload Execution**: The command dispatcher supports 14 distinct commands. This DLL is itself the injected payload — it verifies at startup that it is running inside svchost.exe as SYSTEM, confirming injection was performed by an external loader before execution. Key capabilities include in-process shellcode execution (opcodes 5→6→7), token impersonation via WTSQueryUserToken + CreateProcessAsUserA, and a plugin loading system for extending functionality at runtime.
