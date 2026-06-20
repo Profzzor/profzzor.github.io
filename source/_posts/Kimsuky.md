@@ -1512,7 +1512,7 @@ BSTR encryptedKeyBSTR = SysAllocStringByteLen(
 
 // Prepare output buffer and flags
 BSTR decryptedKeyBSTR = nullptr;
-int32_t decryptionFlags = 0x1F;  // CRYPTPROTECT_UI_FORBIDDEN + additional flags
+int32_t decryptionFlags = 0x1F;
 
 // Call the DPAPI Decrypt method via COM interface vtable
 int64_t* comInterface = var_4c8;
@@ -1527,11 +1527,6 @@ if (hr >= 0) {
     // decryptedKeyBSTR now contains the plaintext master key
 }
 ```
-**DPAPI Decryption Flags:**
-The value `0x1F` represents a combination of flags:
-- `CRYPTPROTECT_UI_FORBIDDEN (0x01)`: Suppress any UI prompts
-- Additional flags controlling the decryption context
-
 **COM Method Invocation:**
 The malware calls the `Decrypt` method through the COM interface's virtual function table:
 - **Offset `0x28`**: Points to the `Decrypt` method in the DPAPI COM interface
